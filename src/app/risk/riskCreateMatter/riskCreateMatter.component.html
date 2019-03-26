@@ -1,0 +1,92 @@
+<section class="card" xmlns="http://www.w3.org/1999/html">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label>流程名称</label>
+                    <input class="form-control" id="lpNo" name="lpNo" type="text">
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="limitStatus">流程类别</label>
+                    <select class="form-control" name="limitStatus" id="limitStatus">
+                        <option value="0" selected>全面风险报告</option>
+                        <option value="1">文件</option>
+                        <option value="2">风险评估</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label>流程说明</label>
+                    <input class="form-control" id="lpName" name="lpName" type="text">
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label >任务</label>
+                    <select class="form-control" name="limitStatus">
+                        <option value="0">全面风险报告第一季度</option>
+                        <option value="1">全面风险报告第二季度</option>
+                        <option value="2">全面风险报告第三季度</option>
+                        <option value="2">全面风险报告第四季度</option>
+                        <option value="2">全面风险报告年度</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <button class="btn btn-outline-success mr-2 mb-2" type="submit" style="margin-top: 12%;">保存</button>
+            </div>
+        </div>
+        <div class="row">
+            <jqxTree #myTree width="300" height="500" (onSelect)="ItemClick($event)" [dragStart]="dragStart"
+                     [source]="records"
+                     style="float: left;margin-top: 28px ;border-color: #e4e9f0;">
+            </jqxTree>
+            <div style="margin-left: 60px;  float: left; width: 50%;" *ngIf="showAdd">
+                <form novalidate (ngSubmit)="saveReport()" [formGroup]="saveForm">
+                    <div class="modal-header">
+                        <h3>{{titleName}}</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <button class="btn btn-outline-primary mr-2 mb-2" type="button"
+                                    (click)="showAddModal()">新增
+                            </button>
+                            <button class="btn btn-outline-warning mr-2 mb-2" type="button"
+                                    (click)="getEdit(reportID)">编辑
+                            </button>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="mb-5">
+                                    <table datatable [dtOptions]="dtOptions" class="table table-hover nowrap" width="100%"></table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <input type="hidden" name="reportId" id="reportId" formControlName="reportId">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="form-label">报告内容:</label>
+                                    <div class="summernote"></div>
+                                    <!--<textarea class="form-control" rows="16" formControlName="reportContent"-->
+                                              <!--style="margin-top: 0px; margin-bottom: 0px;"></textarea>-->
+                                    <!--<div class="error"-->
+                                         <!--*ngIf="saveForm.get('reportContent').invalid && saveForm.get('reportContent').touched">-->
+                                        <!--报告内容不能为空-->
+                                    <!--</div>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary width-150" [disabled]="saveForm.invalid">保存
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

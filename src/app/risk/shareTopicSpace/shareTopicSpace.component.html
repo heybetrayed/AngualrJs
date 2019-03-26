@@ -1,0 +1,57 @@
+<nz-list
+        class="demo-loadmore-list"
+        [nzDataSource]="data"
+        [nzItemLayout]="'horizontal'"
+        [nzLoading]="loading"
+        [nzRenderItem]="item">
+    <ng-template #item let-item>
+        <nz-list-item [nzActions]="[editAction]">
+            <ng-template #editAction>
+                <ul class="topic-space">
+                    <li>
+                        <label *ngIf="tabIndex === 0">{{item.createDate | date:'yyyy-MM-dd'}}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a *ngIf="tabIndex === 0" (click)="showContent(item)">查&nbsp;看</a>
+                    </li>
+                    <li>
+                        <label *ngIf="tabIndex === 1">{{item.createDate | date:'yyyy-MM-dd'}}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a *ngIf="tabIndex === 1" (click)="showContent(item)">查&nbsp;看</a>
+                    </li>
+                    <li>
+                        <label *ngIf="tabIndex === 2">{{item.createDate | date:'yyyy-MM-dd'}}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a *ngIf="tabIndex === 2" (click)="showContent(item)">查&nbsp;看</a>
+                    </li>
+                </ul>
+            </ng-template>
+            <nz-list-item-meta [nzTitle]="nzTitle" [nzDescription]="nzDescription">
+                <ng-template #nzTitle>
+                    <a class="ellipsis" [style.width]="nameWidth+'px'">{{item.title}}</a>
+                </ng-template>
+            </nz-list-item-meta>
+        </nz-list-item>
+    </ng-template>
+</nz-list>
+
+<nz-modal [(nzVisible)]="isVisible" nzWidth="800"  [nzContent]="modalContent" [nzFooter]="modalFooter"  (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+    <ng-template #modalContent>
+        <!-- Panel with Right Sidebar -->
+        <section class="card ">
+        <div class="card-header">
+            <div class="pull-right mt-2">
+                    <span class="mr-3">
+                        发布时间:
+                        <a href="javascript: void(0);">{{showData.createDate | date:'yyyy-MM-dd'}}</a>
+                    </span>
+                </div>
+            <span class="cat__core__title">
+                <strong>{{showData.title}}</strong>
+            </span>
+        </div>
+        <div class="card-body" [innerHTML]="showData.content">
+                
+        </div>
+        </section>
+        <!-- End Panel with Right Sidebar -->
+    </ng-template>
+    <ng-template #modalFooter>
+    </ng-template>
+  </nz-modal>

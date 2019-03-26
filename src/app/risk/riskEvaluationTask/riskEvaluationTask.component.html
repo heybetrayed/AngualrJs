@@ -1,0 +1,227 @@
+<section class="card">
+    <div class="card-header">
+        <form novalidate (ngSubmit)="searchData(true)" [formGroup]="searchForm">
+            <div nz-row>
+                <div nz-col nzXs="6" nzSm="6" nzMd="6" nzLg="6" nzXl="6">
+                    <div class="form-group">
+                        <label class="col-md-4">任务名称：</label>
+                        <input class="form-control col-md-6" nz-input id="taskName" name="taskName" type="text"
+                               formControlName="aTaskTitle">
+                    </div>
+                </div>
+                <div nz-col nzXs="6" nzSm="6" nzMd="6" nzLg="6" nzXl="6">
+                    <div class="form-group">
+                        <label>状态：</label>
+                        <nz-select formControlName="status"  style="width: 50%;" [(ngModel)]="selectedValue"  nzAllowClear nzPlaceHolder="请选择状态">
+                            <nz-option nzValue="" nzLabel="全部"></nz-option>
+                            <nz-option nzValue="1" nzLabel="生效"></nz-option>
+                            <nz-option nzValue="0" nzLabel="失效"></nz-option>
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-col nzXs="3" nzSm="3" nzMd="3" nzLg="3" nzXl="2">
+                    <button nz-button class="btn btn-outline-success mr-2 mb-2" type="submit">查&nbsp;&nbsp;询</button>
+                </div>
+                <div nz-col nzXs="3" nzSm="3" nzMd="3" nzLg="3" nzXl="2">
+                    <button nz-button class="btn btn-outline-primary mr-2 mb-2" nzType="primary" (click)="addTask()">
+                        新&nbsp;&nbsp;增
+                    </button>
+                </div>
+                <div nz-col nzXs="3" nzSm="3" nzMd="3" nzLg="3" nzXl="2">
+                    <button nz-button class="btn btn-outline-warning" [disabled]="disabledButton" nzType="primary"
+                            [nzLoading]="operating" (click)="disableAll()">
+                        禁&nbsp;&nbsp;用
+                    </button>
+                </div>
+                <div nz-col nzXs="3" nzSm="3" nzMd="3" nzLg="3" nzXl="2">
+                    <button nz-button class="btn btn-outline-warning mr-2 mb-2" nzType="primary"
+                            (click)="clearSearchSet()">
+                        重&nbsp;&nbsp;置
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="table-responsive mb-5">
+                    <nz-table
+                            #ajaxTable
+                            nzShowSizeChanger
+                            nzBordered
+                            nzSize="small"
+                            [nzFrontPagination]="false"
+                            [nzData]="dataSet"
+                            [nzLoading]="loading"
+                            [nzTotal]="total"
+                            [(nzPageIndex)]="pageIndex"
+                            [(nzPageSize)]="pageSize"
+                            (nzPageIndexChange)="searchData()"
+                            (nzPageSizeChange)="searchData(true)">
+                        <thead (nzSortChange)="sort($event)" nzSingleSort>
+                        <tr>
+                            <th nzShowCheckbox [(nzChecked)]="allChecked" [nzIndeterminate]="indeterminate"
+                                (nzCheckedChange)="checkAll($event)"></th>
+                            <th nzShowSort nzSortKey="aTaskTitle">任务名称</th>
+                            <th nzShowSort nzSortKey="aTaskStartDate">开始时间</th>
+                            <th nzShowSort nzSortKey="aTaskEndDate">结束时间</th>
+                            <th nzShowSort nzSortKey="createBy">创建人</th>
+                            <th nzShowSort nzSortKey="createDate">创建时间</th>
+                            <th nzShowSort nzSortKey="updateBy">最新修改人</th>
+                            <th nzShowSort nzSortKey="updateDate">最新修改时间</th>
+                            <th>状态</th>
+                            <th><span>操作</span></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let data of ajaxTable.data">
+                            <td nzShowCheckbox [(nzChecked)]="data.checked"
+                                (nzCheckedChange)="refreshStatus($event)"></td>
+                            <td>
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper">
+                                        <ng-container *ngIf="!editCache[data.id].edit">
+                                            {{data.aTaskTitle}}
+                                            <i class="anticon anticon-edit editable-cell-icon"
+                                               (click)="startEdit(data.id)"></i>
+                                        </ng-container>
+                                        <ng-container *ngIf="editCache[data.id].edit">
+                                            <input type="text" nz-input [(ngModel)]="editCache[data.id].name">
+                                            <i class="anticon anticon-check editable-cell-icon-check"
+                                               (click)="finishEdit(data)"></i>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{data.aTaskStartDate | date:'yyyy-MM-dd'}}</td>
+                            <td>{{data.aTaskEndDate | date:'yyyy-MM-dd'}}</td>
+                            <td>{{data.createBy}}</td>
+                            <td>{{data.createDate| date:'yyyy-MM-dd'}}</td>
+                            <td>{{data.updateBy}}</td>
+                            <td>{{data.updateDate| date:'yyyy-MM-dd'}}</td>
+                            <td *ngIf=" data.status == 0 ">失效</td>
+                            <td *ngIf=" data.status == 1 ">生效</td>
+                            <td>
+                                <a *ngIf=" data.status == 1 " (click)="inputData(data)">填写表格&nbsp;&nbsp;</a>
+                                <nz-popconfirm  *ngIf=" data.status == 1 "  [nzTitle]="'确定禁用?'" (nzOnConfirm)="disable(data.id)">
+                                    <a nz-popconfirm>禁用</a>
+                                </nz-popconfirm>
+                                <nz-popconfirm  *ngIf=" data.status == 0 "  [nzTitle]="'确定启用?'" (nzOnConfirm)="enable(data.id)">
+                                    <a nz-popconfirm>启用</a>
+                                </nz-popconfirm>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    <nz-modal [(nzVisible)]="isVisible"
+              nzTitle="Modal Title"
+              [nzFooter]="modalFooter"
+              [nzTitle]="modalTitle"
+              (nzOnCancel)="handleCancel()">
+        <form nz-form [formGroup]="validateForm" >
+            <nz-form-item>
+                <nz-form-label [nzSpan]="7" nzRequired>任务名称</nz-form-label>
+                <nz-form-control [nzSpan]="12">
+                    <input nz-input id="name" formControlName="aTaskTitle" placeholder="必填">
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSpan]="7" nzRequired>任务时间</nz-form-label>
+                <nz-form-control [nzSm]="16" [nzXs]="24">
+                    <nz-range-picker formControlName="aTaskRange"></nz-range-picker>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSpan]="7" nzRequired>模版</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24">
+                    <nz-select formControlName="templateId" style="width: 200px;">
+                        <div *ngFor="let t of templateSet">
+                            <nz-option nzLabel={{t.aTName}} nzValue={{t.id}}></nz-option>
+                        </div>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+        <ng-template #modalTitle>
+            新增任务
+        </ng-template>
+        <ng-template #modalFooter>
+            <button nz-button nzType="primary" [disabled]="!validateForm.valid" (click)="submitForm()">保存</button>
+        </ng-template>
+    </nz-modal>
+    <nz-modal
+            class="input-modal"
+            [(nzVisible)]="tableVisible"
+            [nzFooter]="modalFooterTable"
+            [nzTitle]="modalTitleTable"
+            (nzOnCancel)="handleCancel()"
+            [nzWidth]="1000"
+            [nzStyle]="{ top: '40px' }">
+        <div class="card-container">
+            <nz-tabset [nzTabPosition]="'top'" nzType="'card'" nzSize="small">
+                <nz-tab *ngFor="let module of modules" [nzTitle]="module.aMName">
+                    <nz-table #inputTable
+                              [nzData]="module.types"
+                              nzBordered>
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>评估因素具体描述</th>
+                            <th>评估结果</th>
+                            <th>对评估结果的说明</th>
+                            <th>支持文件</th>
+                            <th>填报部门</th>
+                            <th>填报人员</th>
+                            <th>得分</th>
+                            <th>评估因素来源</th>
+                        </tr>
+                        </thead>
+                        <tbody *ngFor="let type of module.types;index as j">
+                        <tr>
+                            <td colspan="9">{{j+1}}.&nbsp;&nbsp;{{type.aTypeName}}</td>
+                        </tr>
+                        <tr *ngFor="let factor of type.factors;index as i">
+                            <td>{{i+1}}</td>
+                            <td>{{factor.aFDescript}}</td>
+                            <td>
+                                <nz-select [(ngModel)]="factor['aFDResult']">
+                                    <nz-option *ngFor="let choice of resultValue" nzValue="{{choice}}"
+                                               nzLabel="{{choice}}"></nz-option>
+                                </nz-select>
+                            </td>
+                            <td>
+                                <textarea row="4" nz-input [(ngModel)]="factor.aFDCaption"></textarea>
+                            </td>
+                            <td>
+                                <textarea row="4" nz-input [(ngModel)]="factor.aFDSupportFile"></textarea>
+                            </td>
+                            <td>
+                                {{organizationDict[factor.aFDeptId]}}
+                            </td>
+                            <td>
+                                <input nz-input [(ngModel)]="factor.aFDReporter">
+                            </td>
+                            <td>
+                                <div [(ngModel)]="factor.aFDScore">{{resultenum[factor['aFDResult']]}}</div>
+                            </td>
+                            <td>{{factor.aFSource}}</td>
+                        </tr>
+                        </tbody>
+                    </nz-table>
+                </nz-tab>
+            </nz-tabset>
+            <button nz-button nzType="primary" (click)="submitInputTable()">清除过滤</button>
+        </div>
+        <ng-template #modalTitleTable>
+            填写表格
+        </ng-template>
+        <ng-template #modalFooterTable>
+
+        </ng-template>
+    </nz-modal>

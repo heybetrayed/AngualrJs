@@ -1,0 +1,166 @@
+<!-- START: tables/datatables -->
+<section class="card">
+
+    <div class="card-header">
+        <form novalidate (ngSubmit)="search()" [formGroup]="searchForm">
+            <div class="row">
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label for="name">系统名称 ：</label>
+                        <input class="form-control" id="name" name="name" type="text"
+                               formControlName="name"/>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label for="statusModal">用户状态</label>
+                        <select class="form-control" name="status" id="status" formControlName="status">
+                            <option value="">全部</option>
+                            <option value="1">启用</option>
+                            <option value="0">禁用</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-3" style="margin-top: 2%;">
+                    <button class="btn btn-outline-success mr-2 mb-2" type="submit">查询</button>
+                    <button class="btn btn-outline-primary mr-2 mb-2" id="addData" type="button"
+                            (click)="showAddModal()">新增
+                    </button>
+                    <button class="btn btn-outline-warning mr-2 mb-2" type="button" (click)="getSystemById(systemId)">
+                        编辑
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="mb-5">
+                    <table datatable [dtOptions]="dtOptions" class="table table-hover nowrap" width="100%"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--新增页面-->
+    <ng-template #content let-c="close">
+        <form novalidate (ngSubmit)="saveSystem()" [formGroup]="saveForm">
+            <input type="hidden" name="id" id="userId" formControlName="id">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">新增系统</h5>
+                <button type="button" class="close" aria-label="Close" (click)="c('Close click')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="iconModal">图标</label>
+                            <input id="iconModal" class="form-control" type="text" formControlName="icon">
+                            <div class="error" *ngIf="saveForm.get('icon').invalid && saveForm.get('icon').touched">
+                                字段名称不能为空，且长度在2-8字符之间
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="bannerModal">背景</label>
+                            <input id="bannerModal" class="form-control" type="text" formControlName="banner">
+                            <div class="error"
+                                 *ngIf="saveForm.get('banner').invalid && saveForm.get('banner').touched">
+                                字段名称不能为空，且长度在2-8字符之间
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="themeModal">主题</label>
+                            <input id="themeModal" class="form-control" type="text" formControlName="theme">
+                            <div class="error" *ngIf="saveForm.get('theme').invalid && saveForm.get('theme').touched">
+                                字段名称不能为空，且长度在2-8字符之间
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="basepathModal">根目录</label>
+                            <input id="basepathModal" class="form-control" type="text" formControlName="basepath">
+                            <div class="error"
+                                 *ngIf="saveForm.get('basepath').invalid && saveForm.get('basepath').touched">
+                                字段名称不能为空，且长度在2-8字符之间
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="nameModal">系统名称</label>
+                            <input id="nameModal" class="form-control" type="text" formControlName="name">
+                            <div class="error" *ngIf="saveForm.get('name').invalid && saveForm.get('name').touched">
+                                字段名称不能为空，且长度在2-8字符之间
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="titlehModal">系统标题</label>
+                            <input id="titlehModal" class="form-control" type="text" formControlName="title">
+                            <div class="error"
+                                 *ngIf="saveForm.get('title').invalid && saveForm.get('title').touched">
+                                字段名称不能为空，且长度在2-8字符之间
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="descriptionModal">系统描述</label>
+                            <input id="descriptionModal" class="form-control" type="text" formControlName="description">
+                            <div class="error"
+                                 *ngIf="saveForm.get('description').invalid && saveForm.get('description').touched">
+                                字段名称不能为空，且长度在2-8字符之间
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="statusModal">系统状态</label>
+                            <select id="statusModal" name="status" class="form-control"
+                                    formControlName="status">
+                                <option value="1">启用</option>
+                                <option value="0">禁用</option>
+                            </select>
+                            <div class="error"
+                                 *ngIf="saveForm.get('status').invalid && saveForm.get('status').touched">
+                                请选择字段状态
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary width-150" [disabled]="saveForm.invalid">保存</button>
+                <button type="button" class="btn" data-dismiss="modal" (click)="c('Close click')">关闭</button>
+            </div>
+        </form>
+    </ng-template>
+
+
+</section>
+<!-- END: tables/datatables -->

@@ -1,0 +1,305 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "clean-ui": {
+      "root": "",
+      "sourceRoot": "src",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "tsConfig": "src/tsconfig.json",
+            "polyfills": "src/polyfills.ts",
+            "assets": [
+              "src/assets",
+              "src/favicon.ico",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+                "output": "/assets/"
+              }
+            ],
+            "styles": [
+              "src/styles.scss",
+              "src/assets/preloader.css",
+              "src/assets/vendors/by_hands/bootstrap/css/bootstrap.min.css",
+              "src/assets/vendors/by_bower/jscrollpane/style/jquery.jscrollpane.css",
+              "src/assets/vendors/by_bower/ladda/dist/ladda-themeless.min.css",
+              "src/assets/vendors/by_bower/bootstrap-select/dist/css/bootstrap-select.min.css",
+              "src/assets/vendors/by_bower/select2/dist/css/select2.min.css",
+              "src/assets/vendors/by_bower/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css",
+              "src/assets/vendors/by_bower/fullcalendar/dist/fullcalendar.min.css",
+              "src/assets/vendors/by_bower/bootstrap-sweetalert/dist/sweetalert.css",
+              "src/assets/vendors/by_bower/summernote/dist/summernote.css",
+              "src/assets/vendors/by_bower/owl.carousel/dist/assets/owl.carousel.min.css",
+              "src/assets/vendors/by_bower/ionrangeslider/css/ion.rangeSlider.css",
+              "src/assets/vendors/by_bower/datatables/media/css/dataTables.bootstrap4.min.css",
+              "src/assets/vendors/by_bower/c3/c3.min.css",
+              "src/assets/vendors/by_bower/chartist/dist/chartist.min.css",
+              "src/assets/vendors/by_bower/nprogress/nprogress.css",
+              "src/assets/vendors/by_bower/jquery-steps/demo/css/jquery.steps.css",
+              "src/assets/vendors/by_bower/dropify/dist/css/dropify.min.css",
+              "src/assets/vendors/by_hands/font-linearicons/style.css",
+              "src/assets/vendors/by_hands/font-icomoon/style.css",
+              "src/assets/vendors/by_hands/font-awesome/css/font-awesome.min.css",
+              "src/assets/vendors/by_hands/cleanhtmlaudioplayer/src/player.css",
+              "src/assets/vendors/by_hands/cleanhtmlvideoplayer/src/player.css",
+              "src/assets/vendors/by_bower/bootstrap-daterangepicker/daterangepicker.css",
+              "src/assets/modules/core/common/core.cleanui.css",
+              "src/assets/modules/vendors/common/vendors.cleanui.css",
+              "src/assets/modules/layouts/common/layouts-pack.cleanui.css",
+              "src/assets/modules/themes/common/themes.cleanui.css",
+              "src/assets/modules/menu-left/common/menu-left.cleanui.css",
+              "src/assets/modules/menu-right/common/menu-right.cleanui.css",
+              "src/assets/modules/top-bar/common/top-bar.cleanui.css",
+              "src/assets/modules/footer/common/footer.cleanui.css",
+              "src/assets/modules/pages/common/pages.cleanui.css",
+              "src/assets/modules/ecommerce/common/ecommerce.cleanui.css",
+              "src/assets/modules/apps/common/apps.cleanui.css",
+              "node_modules/jqwidgets-scripts/jqwidgets/styles/jqx.base.css",
+              "node_modules/bpmn-js/dist/assets/diagram-js.css",
+              "node_modules/bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css",
+              "node_modules/bpmn-js-properties-panel/styles/properties.less",
+              "node_modules/ng-zorro-antd/ng-zorro-antd.min.css"
+            ],
+            "scripts": [
+              "src/assets/vendors/by_bower/jquery/dist/jquery.js",
+              "src/assets/vendors/by_bower/popper.js/dist/umd/popper.js",
+              "src/assets/vendors/by_bower/jquery-ui/jquery-ui.min.js",
+              "src/assets/vendors/by_hands/bootstrap/js/bootstrap.min.js",
+              "src/assets/vendors/by_bower/jquery-mousewheel/jquery.mousewheel.min.js",
+              "src/assets/vendors/by_bower/jscrollpane/script/jquery.jscrollpane.min.js",
+              "src/assets/vendors/by_bower/spin.js/spin.js",
+              "src/assets/vendors/by_bower/ladda/dist/ladda.min.js",
+              "src/assets/vendors/by_bower/bootstrap-select/dist/js/bootstrap-select.min.js",
+              "src/assets/vendors/by_bower/select2/dist/js/select2.full.min.js",
+              "src/assets/vendors/by_bower/html5-form-validation/dist/jquery.validation.min.js",
+              "src/assets/vendors/by_bower/jquery-typeahead/dist/jquery.typeahead.min.js",
+              "src/assets/vendors/by_bower/jquery-mask-plugin/dist/jquery.mask.min.js",
+              "src/assets/vendors/by_bower/autosize/dist/autosize.min.js",
+              "src/assets/vendors/by_bower/bootstrap-show-password/bootstrap-show-password.min.js",
+              "src/assets/vendors/by_bower/moment/min/moment.min.js",
+              "src/assets/vendors/by_bower/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js",
+              "src/assets/vendors/by_bower/fullcalendar/dist/fullcalendar.min.js",
+              "src/assets/vendors/by_bower/bootstrap-sweetalert/dist/sweetalert.min.js",
+              "src/assets/vendors/by_bower/remarkable-bootstrap-notify/dist/bootstrap-notify.min.js",
+              "src/assets/vendors/by_bower/summernote/dist/summernote.min.js",
+              "src/assets/vendors/by_bower/owl.carousel/dist/owl.carousel.min.js",
+              "src/assets/vendors/by_bower/ionrangeslider/js/ion.rangeSlider.min.js",
+              "src/assets/vendors/by_bower/nestable/jquery.nestable.js",
+              "src/assets/vendors/by_bower/datatables/media/js/jquery.dataTables.min.js",
+              "src/assets/vendors/by_bower/datatables/media/js/dataTables.bootstrap4.min.js",
+              "src/assets/vendors/by_bower/datatables-fixedcolumns/js/dataTables.fixedColumns.js",
+              "src/assets/vendors/by_bower/datatables-responsive/js/dataTables.responsive.js",
+              "src/assets/vendors/by_hands/editable-table/mindmup-editabletable.js",
+              "src/assets/vendors/by_bower/d3/d3.min.js",
+              "src/assets/vendors/by_bower/c3/c3.min.js",
+              "src/assets/vendors/by_bower/chartist/dist/chartist.min.js",
+              "src/assets/vendors/by_bower/peity/jquery.peity.min.js",
+              "src/assets/vendors/by_bower/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.min.js",
+              "src/assets/vendors/by_bower/jquery-countTo/jquery.countTo.js",
+              "src/assets/vendors/by_bower/nprogress/nprogress.js",
+              "src/assets/vendors/by_bower/jquery-steps/build/jquery.steps.min.js",
+              "src/assets/vendors/by_bower/chart.js/dist/Chart.bundle.min.js",
+              "src/assets/vendors/by_bower/dropify/dist/js/dropify.min.js",
+              "src/assets/vendors/by_hands/cleanhtmlaudioplayer/src/jquery.cleanaudioplayer.js",
+              "src/assets/vendors/by_hands/cleanhtmlvideoplayer/src/jquery.cleanvideoplayer.js",
+              "src/assets/vendors/by_bower/angular/angular.min.js",
+              "src/assets/vendors/by_bower/bootstrap-daterangepicker/daterangepicker.js",
+              "src/assets/vendors/by_bower/angular-daterangepicker/js/angular-daterangepicker.js",
+              "src/assets/modules/weboffice/js/onlyoffice-api.js",
+              "node_modules/datatables.net/js/jquery.dataTables.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "clean-ui:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "clean-ui:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "clean-ui:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/test.ts",
+            "karmaConfig": "./karma.conf.js",
+            "polyfills": "src/polyfills.ts",
+            "scripts": [
+              "src/assets/vendors/by_bower/jquery/dist/jquery.js",
+              "src/assets/vendors/by_bower/popper.js/dist/umd/popper.js",
+              "src/assets/vendors/by_bower/jquery-ui/jquery-ui.min.js",
+              "src/assets/vendors/by_hands/bootstrap/js/bootstrap.min.js",
+              "src/assets/vendors/by_bower/jquery-mousewheel/jquery.mousewheel.min.js",
+              "src/assets/vendors/by_bower/jscrollpane/script/jquery.jscrollpane.min.js",
+              "src/assets/vendors/by_bower/spin.js/spin.js",
+              "src/assets/vendors/by_bower/ladda/dist/ladda.min.js",
+              "src/assets/vendors/by_bower/bootstrap-select/dist/js/bootstrap-select.min.js",
+              "src/assets/vendors/by_bower/select2/dist/js/select2.full.min.js",
+              "src/assets/vendors/by_bower/html5-form-validation/dist/jquery.validation.min.js",
+              "src/assets/vendors/by_bower/jquery-typeahead/dist/jquery.typeahead.min.js",
+              "src/assets/vendors/by_bower/jquery-mask-plugin/dist/jquery.mask.min.js",
+              "src/assets/vendors/by_bower/autosize/dist/autosize.min.js",
+              "src/assets/vendors/by_bower/bootstrap-show-password/bootstrap-show-password.min.js",
+              "src/assets/vendors/by_bower/moment/min/moment.min.js",
+              "src/assets/vendors/by_bower/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js",
+              "src/assets/vendors/by_bower/fullcalendar/dist/fullcalendar.min.js",
+              "src/assets/vendors/by_bower/bootstrap-sweetalert/dist/sweetalert.min.js",
+              "src/assets/vendors/by_bower/remarkable-bootstrap-notify/dist/bootstrap-notify.min.js",
+              "src/assets/vendors/by_bower/summernote/dist/summernote.min.js",
+              "src/assets/vendors/by_bower/owl.carousel/dist/owl.carousel.min.js",
+              "src/assets/vendors/by_bower/ionrangeslider/js/ion.rangeSlider.min.js",
+              "src/assets/vendors/by_bower/nestable/jquery.nestable.js",
+              "src/assets/vendors/by_bower/datatables/media/js/jquery.dataTables.min.js",
+              "src/assets/vendors/by_bower/datatables/media/js/dataTables.bootstrap4.min.js",
+              "src/assets/vendors/by_bower/datatables-fixedcolumns/js/dataTables.fixedColumns.js",
+              "src/assets/vendors/by_bower/datatables-responsive/js/dataTables.responsive.js",
+              "src/assets/vendors/by_hands/editable-table/mindmup-editabletable.js",
+              "src/assets/vendors/by_bower/d3/d3.min.js",
+              "src/assets/vendors/by_bower/c3/c3.min.js",
+              "src/assets/vendors/by_bower/chartist/dist/chartist.min.js",
+              "src/assets/vendors/by_bower/peity/jquery.peity.min.js",
+              "src/assets/vendors/by_bower/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.min.js",
+              "src/assets/vendors/by_bower/jquery-countTo/jquery.countTo.js",
+              "src/assets/vendors/by_bower/nprogress/nprogress.js",
+              "src/assets/vendors/by_bower/jquery-steps/build/jquery.steps.min.js",
+              "src/assets/vendors/by_bower/chart.js/dist/Chart.bundle.min.js",
+              "src/assets/vendors/by_bower/dropify/dist/js/dropify.min.js",
+              "src/assets/vendors/by_hands/cleanhtmlaudioplayer/src/jquery.cleanaudioplayer.js",
+              "src/assets/vendors/by_hands/cleanhtmlvideoplayer/src/jquery.cleanvideoplayer.js",
+              "src/assets/vendors/by_bower/angular/angular.min.js",
+              "src/assets/vendors/by_bower/bootstrap-daterangepicker/daterangepicker.js",
+              "src/assets/vendors/by_bower/angular-daterangepicker/js/angular-daterangepicker.js",
+              "src/assets/modules/weboffice/js/onlyoffice-api.js",
+              "node_modules/datatables.net/js/jquery.dataTables.js"
+            ],
+            "styles": [
+              "src/styles.scss",
+              "src/assets/preloader.css",
+              "src/assets/vendors/by_hands/bootstrap/css/bootstrap.min.css",
+              "src/assets/vendors/by_bower/jscrollpane/style/jquery.jscrollpane.css",
+              "src/assets/vendors/by_bower/ladda/dist/ladda-themeless.min.css",
+              "src/assets/vendors/by_bower/bootstrap-select/dist/css/bootstrap-select.min.css",
+              "src/assets/vendors/by_bower/select2/dist/css/select2.min.css",
+              "src/assets/vendors/by_bower/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css",
+              "src/assets/vendors/by_bower/fullcalendar/dist/fullcalendar.min.css",
+              "src/assets/vendors/by_bower/bootstrap-sweetalert/dist/sweetalert.css",
+              "src/assets/vendors/by_bower/summernote/dist/summernote.css",
+              "src/assets/vendors/by_bower/owl.carousel/dist/assets/owl.carousel.min.css",
+              "src/assets/vendors/by_bower/ionrangeslider/css/ion.rangeSlider.css",
+              "src/assets/vendors/by_bower/datatables/media/css/dataTables.bootstrap4.min.css",
+              "src/assets/vendors/by_bower/c3/c3.min.css",
+              "src/assets/vendors/by_bower/chartist/dist/chartist.min.css",
+              "src/assets/vendors/by_bower/nprogress/nprogress.css",
+              "src/assets/vendors/by_bower/jquery-steps/demo/css/jquery.steps.css",
+              "src/assets/vendors/by_bower/dropify/dist/css/dropify.min.css",
+              "src/assets/vendors/by_hands/font-linearicons/style.css",
+              "src/assets/vendors/by_hands/font-icomoon/style.css",
+              "src/assets/vendors/by_hands/font-awesome/css/font-awesome.min.css",
+              "src/assets/vendors/by_hands/cleanhtmlaudioplayer/src/player.css",
+              "src/assets/vendors/by_hands/cleanhtmlvideoplayer/src/player.css",
+              "src/assets/vendors/by_bower/bootstrap-daterangepicker/daterangepicker.css",
+              "src/assets/modules/core/common/core.cleanui.css",
+              "src/assets/modules/vendors/common/vendors.cleanui.css",
+              "src/assets/modules/layouts/common/layouts-pack.cleanui.css",
+              "src/assets/modules/themes/common/themes.cleanui.css",
+              "src/assets/modules/menu-left/common/menu-left.cleanui.css",
+              "src/assets/modules/menu-right/common/menu-right.cleanui.css",
+              "src/assets/modules/top-bar/common/top-bar.cleanui.css",
+              "src/assets/modules/footer/common/footer.cleanui.css",
+              "src/assets/modules/pages/common/pages.cleanui.css",
+              "src/assets/modules/ecommerce/common/ecommerce.cleanui.css",
+              "src/assets/modules/apps/common/apps.cleanui.css",
+              "node_modules/ng-zorro-antd/src/ng-zorro-antd.min.css",
+              "node_modules/jqwidgets-scripts/jqwidgets/styles/jqx.base.css",
+              "node_modules/bpmn-js/dist/assets/diagram-js.css",
+              "node_modules/bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css",
+              "node_modules/bpmn-js-properties-panel/styles/properties.less"
+            ],
+            "assets": [
+              "src/assets",
+              "src/favicon.ico"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "src/tsconfig.json"
+            ],
+            "exclude": []
+          }
+        }
+      }
+    },
+    "clean-ui-e2e": {
+      "root": "e2e",
+      "sourceRoot": "e2e",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "./protractor.conf.js",
+            "devServerTarget": "clean-ui:serve"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "e2e/tsconfig.json"
+            ],
+            "exclude": []
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "clean-ui",
+  "schematics": {
+    "@schematics/angular:component": {
+      "prefix": "app",
+      "styleext": "css"
+    },
+    "@schematics/angular:directive": {
+      "prefix": "app"
+    }
+  }
+}

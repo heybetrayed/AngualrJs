@@ -1,0 +1,278 @@
+<section class="card">
+
+    <div class="card-header divCenter">
+        <form novalidate (ngSubmit)="search()" [formGroup]="searchForm">
+            <div class="row">
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>索引名称</label>
+                        <input class="form-control" id="cpIndex" name="cpIndex" type="text"
+                               formControlName="cpIndex">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>类型名称</label>
+                        <input class="form-control" id="cpType" name="cpType" type="text"
+                               formControlName="cpType">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>查询时间</label>
+                        <input class="form-control" id="endTime" name="endTime" type="text"
+                               formControlName="endTime">
+                    </div>
+                </div>
+
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>任务名称</label>
+                        <input class="form-control" id="cpTaskName" name="cpTaskName" type="text"
+                               formControlName="cpTaskName">
+                    </div>
+                </div>
+
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>操作类型</label>
+                        <select class="form-control" name="cpOperationType" id="cpOperationType"
+                                formControlName="cpOperationType">
+                            <option value="">全部</option>
+                            <option value="0">自动</option>
+                            <option value="1">手动</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>状态</label>
+                        <select class="form-control" name="cpStatus" id="cpStatus"
+                                formControlName="cpStatus">
+                            <option value="">全部</option>
+                            <option value="0">禁用</option>
+                            <option value="1">启用</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <button class="btn btn-outline-success mr-2 mb-2" type="submit">查询</button>
+
+                <button class="btn btn-outline-primary mr-2 mb-2" type="button"
+                        (click)="showAddModal(true)">新增
+                </button>
+                <button class="btn btn-outline-warning mr-2 mb-2" type="button"
+                        (click)="getOne(cpId)">编辑
+                </button>
+
+                <!-- <button class="btn btn-outline-danger mr-2 mb-2" type="button" (click)="downloadExcel()">
+                     导出Excel
+                 </button>-->
+
+            </div>
+
+
+        </form>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="mb-5">
+                    <table datatable [dtOptions]="dtOptions" class="table table-hover nowrap" width="100%"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 新增配置参数-->
+    <ng-template #content let-c="close">
+        <form novalidate (ngSubmit)="saveConfparameter()" [formGroup]="saveForm">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">{{titleName}}配置参数</h5>
+                <button type="button" class="close" aria-label="Close" (click)="c('Close click')"
+                        style="margin-right: 2%;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <input type="hidden" name="id" id="id" formControlName="id">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label">索引名称</label>
+                            <input id="cpIndexModal" class="form-control" type="text"
+                                   formControlName="cpIndex" name="cpIndex">
+                            <div class="error"
+                                 *ngIf="saveForm.get('cpIndex').invalid && saveForm.get('cpIndex').touched">
+                                索引名称不能为空，长度2-80之间
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label">任务名称</label>
+                            <input id="cpTaskNameModal" class="form-control" type="text"
+                                   formControlName="cpTaskName" name="cpTaskName">
+                            <div class="error"
+                                 *ngIf="saveForm.get('cpTaskName').invalid && saveForm.get('cpTaskName').touched">
+                                任务名称不能为空，长度2-80之间
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label">EMAIL</label>
+                            <input id="cpEmailModal" class="form-control" type="text"
+                                   formControlName="cpEmail" name="cpEmail">
+                            <div class="error"
+                                 *ngIf="saveForm.get('cpEmail').invalid && saveForm.get('cpEmail').touched">
+                                请正确输入邮箱
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label">操作类型</label>
+                            <select name="cpOperationType" class="form-control select2"
+                                    formControlName="cpOperationType">
+                                <option value="0">自动</option>
+                                <option value="1">手动</option>
+                            </select>
+                            <div class="error"
+                                 *ngIf="saveForm.get('cpOperationType').invalid && saveForm.get('cpOperationType').touched">
+                                请选择有效的数据
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label">短语精准匹配</label>
+                            <select name="cpMatchPhrase" class="form-control select2"
+                                    formControlName="cpMatchPhrase">
+                                <option value="0">禁用</option>
+                                <option value="1">使用</option>
+                            </select>
+                            <div class="error"
+                                 *ngIf="saveForm.get('cpMatchPhrase').invalid && saveForm.get('cpMatchPhrase').touched">
+                                请选择有效的数据
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label">状态</label>
+                            <select name="cpStatus" class="form-control select2"
+                                    formControlName="cpStatus">
+                                <option value="0">禁用</option>
+                                <option value="1">启用</option>
+                            </select>
+                            <div class="error"
+                                 *ngIf="saveForm.get('cpStatus').invalid && saveForm.get('cpStatus').touched">
+                                请选择有效的数据
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label">验证结果信息</label>
+                            <input id="cpResultCheckModal" class="form-control" type="text"
+                                   formControlName="cpResultCheck" name="cpResultCheck">
+                            <div class="error"
+                                 *ngIf="saveForm.get('cpResultCheck').invalid && saveForm.get('cpResultCheck').touched">
+                                验证结果信息，长度2-80之间
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">查询时间</label><br/>
+                    <input class="form-control" name="endTime" type="text" formControlName="endTime">
+                    <div class="error" *ngIf="saveForm.get('endTime').invalid && saveForm.get('endTime').touched">
+                        查询时间不能为空
+                    </div>
+                </div>
+
+                        <div class="form-group">
+                            <label class="form-label">类型名称</label><br/>
+                            <strong style="color: red">注:多个类型名称用，号隔开</strong>
+                                <textarea class="form-control" formControlName="cpType"></textarea>
+                            <div class="error"
+                                 *ngIf="saveForm.get('cpType').invalid && saveForm.get('cpType').touched">
+                                类型名称不能为空，长度2-80之间
+                            </div>
+                    </div>
+                <div class="form-group">
+
+                    <label class="form-label">过滤条件</label><br/>
+                    <strong style="color: red">注:多个类型过滤条件(xxx=111,aaa=222)</strong>
+                    <textarea class="form-control" formControlName="cpFilterCondition"></textarea>
+                    <div class="error"
+                         *ngIf="saveForm.get('cpFilterCondition').invalid && saveForm.get('cpFilterCondition').touched">
+                        过滤条件不能为空，长度2-80之间
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">描述</label>
+                    <!--<strong style="color: red">注:各类分只可填写数字,可为负,表示减少分数</strong><br/>-->
+                    <textarea class="form-control" formControlName="cpDescribe"></textarea>
+                    <div class="error"
+                         *ngIf="saveForm.get('cpDescribe').invalid && saveForm.get('cpDescribe').touched">
+                        说明不能为空，长度在2-80之间
+                    </div>
+                </div>
+
+                <!--
+                               <div class="row">
+                                   <div class="col-lg-6">
+                                       <div class="form-group">
+                                           <strong>多个类型过滤条件(xxx=111,aaa=222)</strong><br/>
+                                           <label class="form-label">过滤条件</label>
+                                                <textarea class="form-control" formControlName="cpFilterCondition"></textarea>
+                                           <div class="error"
+                                                *ngIf="saveForm.get('cpFilterCondition').invalid && saveForm.get('cpFilterCondition').touched">
+                                               过滤条件不能为空，长度2-80之间
+                                           </div>
+                                       </div>
+                                   </div>
+
+                               </div>
+
+
+
+                               </div>-->
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary width-150" [disabled]="saveForm.invalid || flag">
+                    确认
+                </button>
+                <button type="button" class="btn" data-dismiss="modal" (click)="c('Close click')">关闭
+                </button>
+            </div>
+        </form>
+
+
+    </ng-template>
+
+</section>

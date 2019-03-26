@@ -1,0 +1,12 @@
+{
+  "name": "angular",
+  "version": "v1.6.8",
+  "license": "MIT",
+  "main": "./angular.js",
+  "ignore": [],
+  "dependencies": {},
+  "_source": "nexus+http://22.144.101.75:8081/repository/bower/angular",
+  "_target": "^1.2.17",
+  "_release": "v1.6.8",
+  "_originalSource": "angular"
+}

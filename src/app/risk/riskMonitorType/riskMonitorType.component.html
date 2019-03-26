@@ -1,0 +1,507 @@
+<!-- START: tables/basic-tables -->
+<section class="card">
+    <div class="card-header">
+        <form novalidate (ngSubmit)="searchData(true)" [formGroup]="searchForm">
+            <div nz-row>
+
+                <div nz-col nzXs="6" nzSm="6" nzMd="6" nzLg="6" nzXl="4">
+                    <div class="form-group">
+                        <label>类型名称：</label>
+                        <input class="form-control col-md-6" nz-input id="name" name="name" type="text"
+                               formControlName="name">
+                    </div>
+                </div>
+                <div nz-col nzXs="6" nzSm="6" nzMd="6" nzLg="6" nzXl="4">
+                    <div class="form-group">
+                        <label>状态：</label>
+                        <nz-select formControlName="status" style="width: 50%;" [(ngModel)]="selectedValue" nzAllowClear
+                                   nzPlaceHolder="请选择状态">
+                            <nz-option nzValue="" nzLabel="全部"></nz-option>
+                            <nz-option nzValue="1" nzLabel="生效"></nz-option>
+                            <nz-option nzValue="0" nzLabel="失效"></nz-option>
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-col nzXs="3" nzSm="3" nzMd="3" nzLg="3" nzXl="2">
+                    <button nz-button class="btn btn-outline-success" type="submit">查&nbsp;&nbsp;询</button>
+                </div>
+                <div nz-col nzXs="3" nzSm="3" nzMd="3" nzLg="3" nzXl="2">
+                    <button nz-button class="btn btn-outline-primary" nzType="primary" (click)="showAddMonitorType()">新&nbsp;&nbsp;增
+                    </button>
+                </div>
+                <div nz-col nzXs="3" nzSm="3" nzMd="3" nzLg="3" nzXl="2">
+                    <button nz-button class="btn btn-outline-warning" [disabled]="disabledButton" nzType="primary"
+                            [nzLoading]="operating" (click)="disableAll()">
+                        禁&nbsp;&nbsp;用
+                    </button>
+                </div>
+                <div nz-col nzXs="3" nzSm="3" nzMd="3" nzLg="3" nzXl="2">
+                    <button nz-button class="btn btn-outline-warning mr-2 mb-2" nzType="primary"
+                            (click)="clearSearchSet()">
+                        重&nbsp;&nbsp;置
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+
+
+                <nz-table #basicTable
+                          nzShowSizeChanger
+                          nzSize="small"
+                          [nzFrontPagination]="false"
+                          [nzData]="monitorTypeAll"
+                          [nzLoading]="loading"
+                          [nzTotal]="total"
+                          [(nzPageIndex)]="pageIndex"
+                          [(nzPageSize)]="pageSize"
+                          (nzPageIndexChange)="searchData()"
+                          (nzPageSizeChange)="searchData(true)">
+                    <thead>
+                    <tr>
+                        <th nzShowCheckbox [(nzChecked)]="allChecked" [nzIndeterminate]="indeterminate"
+                            (nzCheckedChange)="checkAll($event)"></th>
+                        <th>类型名称</th>
+                        <th>创建人</th>
+                        <th>创建时间</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let data of basicTable.data">
+                        <td nzShowCheckbox [(nzChecked)]="data.checked"
+                            (nzCheckedChange)="refreshStatus($event)"></td>
+                        <td>{{data.name}}</td>
+                        <td>{{data.createBy}}</td>
+                        <td>{{data.createDate | date:'yyyy-MM-dd'}}</td>
+                        <td *ngIf=" data.status == 0 ">失效</td>
+                        <td *ngIf=" data.status == 1 ">生效</td>
+                        <td>
+                            <a *ngIf=" data.status == 1 " (click)="findMonitorType(data.id)">详情&nbsp;&nbsp;</a>
+                            <a *ngIf=" data.status == 1 " (click)="editMonitorType(data.id)">编辑&nbsp;&nbsp;</a>
+                            <nz-popconfirm *ngIf=" data.status === 1 " [nzTitle]="'确定禁用?'"
+                                           (nzOnConfirm)="disable(data.id)">
+                                <a nz-popconfirm>禁用</a>
+                            </nz-popconfirm>
+                            <nz-popconfirm *ngIf=" data.status === 0 " [nzTitle]="'确定启用?'"
+                                           (nzOnConfirm)="enable(data.id)">
+                                <a nz-popconfirm>启用</a>
+                            </nz-popconfirm>
+                        </td>
+                    </tr>
+                    </tbody>
+                </nz-table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<nz-modal [(nzVisible)]="isVisibleAddDetail"
+          [nzTitle]="modalTitle"
+          [nzContent]="modalContent"
+          [nzFooter]="modalFooter"
+          [nzWidth]="500"
+          (nzOnCancel)="handleCancel()">
+
+    <ng-template #modalTitle>
+        保存风险类型
+    </ng-template>
+
+    <ng-template #modalContent>
+        <form nz-form [formGroup]="saveMonitorTypeForm">
+            <input type="hidden" name="id" formControlName="id">
+            <nz-form-item>
+                <nz-form-label [nzSpan]="7" nzRequired>风险监控类型名称</nz-form-label>
+                <nz-form-control [nzSpan]="12">
+                    <input nz-input formControlName="mTypeName" nz-input placeholder="请填写风险监控类型名称">
+                </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+                <nz-form-label [nzSpan]="7" nzRequired>部门</nz-form-label>
+                <nz-form-control [nzSpan]="12">
+                    <nz-select formControlName="mTypeDeptId" [ngModel]="selectedOrganization" nzAllowClear
+                               nzPlaceHolder="请选择部门">
+                        <nz-option *ngFor="let organization of organizations" [nzValue]="organization.id"
+                                   [nzLabel]="organization.name"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+                <nz-form-label [nzSm]="7" nzRequired>所属组别</nz-form-label>
+                <nz-form-control [nzSm]="12">
+                    <nz-select formControlName="mTypeGroups" [ngModel]="selectedGroup" nzAllowClear nzMode="multiple"
+                               [(ngModel)]="listOfSelectedValue" nzPlaceHolder="请选择所属组别">
+                        <nz-option *ngFor="let group of groups" [nzValue]="group.dditItemCode"
+                                   [nzLabel]="group.dditItemName"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+    </ng-template>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="primary" [disabled]="saveMonitorTypeForm.invalid" (click)="saveMonitorType()">保存
+        </button>
+        <button nz-button nzType="primary" (click)="resetSaveMonitorTypeForm()">重置</button>
+    </ng-template>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="isVisible"
+          [nzTitle]="modalTitle"
+          [nzContent]="modalContent"
+          [nzFooter]="modalFooter"
+          [nzWidth]="500"
+          (nzOnCancel)="handleCancel()">
+
+    <ng-template #modalTitle>
+        保存风险类型
+    </ng-template>
+
+    <ng-template #modalContent>
+        <form nz-form [formGroup]="saveMonitorTypeForm">
+            <input type="hidden" name="id" formControlName="id">
+            <nz-form-item>
+                <nz-form-label [nzSpan]="7" nzRequired>风险监控类型名称</nz-form-label>
+                <nz-form-control [nzSpan]="12">
+                    <input nz-input formControlName="name" nz-input placeholder="请填写风险监控类型名称">
+                </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+                <nz-form-label [nzSpan]="7" nzRequired>风险监控类型说明</nz-form-label>
+                <nz-form-control [nzSpan]="12">
+                    <input nz-input formControlName="comment" nz-input placeholder="请填写风险监控类型说明">
+                </nz-form-control>
+            </nz-form-item>
+
+        </form>
+    </ng-template>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="primary" [disabled]="saveMonitorTypeForm.invalid" (click)="saveMonitorType()">保存
+        </button>
+        <button nz-button nzType="primary" (click)="resetSaveMonitorTypeForm()">重置</button>
+    </ng-template>
+</nz-modal>
+<!-------------------详情页面------------------------>
+<nz-modal [(nzVisible)]="isVisibleItem"
+          [nzWidth]="1200"
+          [nzFooter]="modalFooterItem"
+          (nzOnCancel)="handleCancelItem()">
+    <div class="card-header">
+
+        <div nz-row>
+
+            <div nz-col nzXs="3" nzSm="3" nzMd="3" nzLg="3" nzXl="2">
+                <button nz-button class="btn btn-outline-primary" nzType="primary" (click)="AddDetail()">新&nbsp;&nbsp;增
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <nz-table nzShowSizeChanger
+                          nzSize="small"
+                          nzShowPagination="false"
+                          nzFrontPagination="false"
+                          [nzData]="riskMonitorDetailAll"
+                          [nzLoading]="loading"
+                          [nzTotal]="total"
+                          [(nzPageIndex)]="pageIndex"
+                          [(nzPageSize)]="pageSize">
+                    <thead>
+                    <tr>
+                        <th nzShowExpand></th>
+                        <th>字段名称</th>
+                        <th>部门</th>
+                        <th>组别</th>
+                        <th>是否显示</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <ng-template ngFor let-data [ngForOf]="riskMonitorDetailAll">
+                        <tr>
+
+                            <td nzShowExpand [(nzExpand)]="data.expand" (nzExpandChange)="getChilds(data)"></td>
+                            <td>
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper">
+                                        <ng-container *ngIf="!data.edit">
+                                            {{data.mTypeName}}
+                                        </ng-container>
+                                        <ng-container *ngIf="data.edit">
+                                            <input type="text" nz-input [(ngModel)]="data.mTypeName"
+                                                   placeholder="请输入名称">
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <ng-container *ngIf="!data.edit">
+                                    {{getOrganizationById(data.mTypeDeptId)}}
+                                </ng-container>
+                                <ng-container *ngIf="data.edit">
+                                    <!-- <input type="text" nz-input [(ngModel)]="data.mTypeName">-->
+                                    <nz-select [(ngModel)]="data.mTypeDeptId" nzAllowClear nzMode="multiple"
+                                               nzPlaceHolder="请选择部门" style="min-width: 120px;">
+                                        <nz-option *ngFor="let organization of organizations"
+                                                   [nzValue]="organization.id.toString()"
+                                                   [nzLabel]="organization.name"></nz-option>
+                                    </nz-select>
+
+                                </ng-container>
+                            </td>
+                            <td>
+                                <ng-container *ngIf="!data.edit">
+                                    {{getGroupById(data.mTypeGroup)}}
+                                </ng-container>
+
+                                <ng-container *ngIf="data.edit">
+                                    <nz-select [(ngModel)]="data.mTypeGroup" nzAllowClear nzMode="multiple"
+                                               nzPlaceHolder="请选择组别" style="min-width: 120px;">
+                                        <nz-option *ngFor="let group of groups" [nzValue]="group.dditItemCode"
+                                                   [nzLabel]="group.dditItemName"></nz-option>
+                                    </nz-select>
+                                </ng-container>
+                            </td>
+                            <td>
+                                <ng-container *ngIf="!data.edit">
+                                    {{data.showTab == 1 ? '是' : '否' }}
+                                </ng-container>
+                                <ng-container *ngIf="data.edit">
+                                    <nz-select style="min-width: 100px;" [(ngModel)]="data.showTab" nzAllowClear
+                                               nzPlaceHolder="请选择状态">
+                                        <nz-option nzValue="1" nzLabel="显示"></nz-option>
+                                        <nz-option nzValue="0" nzLabel="不显示"></nz-option>
+                                    </nz-select>
+                                </ng-container>
+                            </td>
+                            <td>
+                                <div class="editable-row-operations">
+                                    <ng-container *ngIf="!data.edit">
+                                        <a (click)="editMonitorTypeDetail(data)">编辑</a>
+                                    </ng-container>&nbsp;&nbsp;
+                                    <ng-container *ngIf="!data.edit">
+                                        <a (click)="addMonitorTypeDetail(data)">新增</a>
+                                    </ng-container>&nbsp;&nbsp;
+                                    <nz-popconfirm *ngIf="!data.edit" [nzTitle]="'确定删除?'"
+                                                   (nzOnConfirm)="deleteMonitorTypeDetail(data)">
+                                        <a nz-popconfirm>删除</a>
+                                    </nz-popconfirm>
+
+                                    <ng-container *ngIf="data.edit">
+                                        <a (click)="saveEdit(data)">保存</a>&nbsp;&nbsp;
+                                        <nz-popconfirm [nzTitle]="'确认取消?'" (nzOnConfirm)="cancelEdit(data)">
+                                            <a nz-popconfirm>取消</a>
+                                        </nz-popconfirm>
+                                    </ng-container>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngIf="data.child.length > 0" [nzExpand]="data.expand">
+                            <td></td>
+                            <td colspan="6">
+                                <nz-table #innerTable [nzData]="data.child" nzSize="middle" [nzShowPagination]="false">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th nzShowExpand></th>
+                        <th>字段名称</th>
+                        <th>部门</th>
+                        <th>组别</th>
+                        <th>是否显示</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <ng-template ngFor let-chilen [ngForOf]="innerTable.data">
+                        <tr>
+                            <td></td>
+                            <td nzShowExpand [(nzExpand)]="chilen.expand" (nzExpandChange)="getChilds(chilen)"></td>
+                            <td>
+                                <ng-container *ngIf="!chilen.edit">
+                                    {{chilen.mTypeName}}
+                                </ng-container>
+                                <ng-container *ngIf="chilen.edit">
+                                    <input type="text" nz-input [(ngModel)]="chilen.mTypeName" placeholder="请输入名称">
+                                </ng-container>
+                            </td>
+                            <td>
+                                <ng-container *ngIf="!chilen.edit">
+                                    {{getOrganizationById(chilen.mTypeDeptId)}}
+                                </ng-container>
+                                <ng-container *ngIf="chilen.edit">
+                                    <!-- <input type="text" nz-input [(ngModel)]="data.mTypeName">-->
+                                    <nz-select [(ngModel)]="chilen.mTypeDeptId" nzAllowClear nzMode="multiple"
+                                               nzPlaceHolder="请选择部门" style="min-width: 120px;">
+                                        <nz-option *ngFor="let organization of organizations"
+                                                   [nzValue]="organization.id.toString()"
+                                                   [nzLabel]="organization.name"></nz-option>
+                                    </nz-select>
+
+                                </ng-container>
+                            </td>
+                            <td>
+                                <ng-container *ngIf="!chilen.edit">
+                                    {{getGroupById(chilen.mTypeGroup)}}
+                                </ng-container>
+                                <ng-container *ngIf="chilen.edit">
+                                    <nz-select [(ngModel)]="chilen.mTypeGroup" nzAllowClear nzMode="multiple"
+                                               nzPlaceHolder="请选择所属组别" style="min-width: 120px;">
+                                        <nz-option *ngFor="let group of groups" [nzValue]="group.dditItemCode"
+                                                   [nzLabel]="group.dditItemName"></nz-option>
+                                    </nz-select>
+                                </ng-container>
+                            </td>
+                            <td>
+                                <ng-container *ngIf="!chilen.edit">
+                                    {{chilen.showTab == 1 ? '是' : '否' }}
+                                </ng-container>
+                                <ng-container *ngIf="chilen.edit">
+                                    <nz-select style="min-width: 100px;" [(ngModel)]="chilen.showTab" nzAllowClear
+                                               nzPlaceHolder="请选择状态">
+                                        <nz-option nzValue="1" nzLabel="显示"></nz-option>
+                                        <nz-option nzValue="0" nzLabel="不显示"></nz-option>
+                                    </nz-select>
+                                </ng-container>
+                            </td>
+                            <td>
+                                <div class="editable-row-operations">
+                                    <ng-container *ngIf="!chilen.edit">
+                                        <a (click)="editMonitorTypeDetail(chilen)">编辑</a>
+                                    </ng-container>&nbsp;&nbsp;
+                                    <ng-container *ngIf="!chilen.edit">
+                                        <a (click)="addMonitorTypeDetail(chilen)">新增</a>
+                                    </ng-container>&nbsp;&nbsp;
+                                    <ng-container *ngIf="chilen.edit">
+                                        <a (click)="saveEdit(chilen)">保存</a>&nbsp;&nbsp;
+                                        <nz-popconfirm [nzTitle]="'确认取消?'" (nzOnConfirm)="cancelEdit(chilen)">
+                                            <a nz-popconfirm>取消</a>
+                                        </nz-popconfirm>
+                                    </ng-container>
+                                    <nz-popconfirm *ngIf="!chilen.edit" [nzTitle]="'确定删除?'"
+                                                   (nzOnConfirm)="deleteMonitorTypeDetail(chilen)">
+                                        <a nz-popconfirm>删除</a>
+                                    </nz-popconfirm>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngIf="chilen.child.length > 0" [nzExpand]="chilen.expand">
+                            <td></td>
+                            <td colspan="6">
+                                <nz-table #threeTable [nzData]="chilen.child" nzSize="middle" [nzShowPagination]="false">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th>字段名称</th>
+                                            <th>部门</th>
+                                            <th>组别</th>
+                                            <th>是否显示</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                       <ng-template ngFor let-three [ngForOf]="threeTable.data">
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>
+                                                <ng-container *ngIf="!three.edit">
+                                                    {{three.mTypeName}}
+                                                </ng-container>
+                                                <ng-container *ngIf="three.edit">
+                                                    <input type="text" nz-input [(ngModel)]="three.mTypeName" placeholder="请输入名称">
+                                                </ng-container>
+                                            </td>
+                                            <td>
+                                                <ng-container *ngIf="!three.edit">
+                                                    {{getOrganizationById(three.mTypeDeptId)}}
+                                                </ng-container>
+                                                <ng-container *ngIf="three.edit">
+                                                    <!-- <input type="text" nz-input [(ngModel)]="data.mTypeName">-->
+                                                    <nz-select [(ngModel)]="three.mTypeDeptId" nzAllowClear nzMode="multiple"
+                                                               nzPlaceHolder="请选择部门" style="min-width: 120px;">
+                                                        <nz-option *ngFor="let organization of organizations"
+                                                                   [nzValue]="organization.id.toString()"
+                                                                   [nzLabel]="organization.name"></nz-option>
+                                                    </nz-select>
+
+                                                </ng-container>
+                                            </td>
+                                            <td>
+                                                <ng-container *ngIf="!three.edit">
+                                                    {{getGroupById(three.mTypeGroup)}}
+                                                </ng-container>
+                                                <ng-container *ngIf="three.edit">
+                                                    <nz-select [(ngModel)]="three.mTypeGroup" nzAllowClear nzMode="multiple"
+                                                               nzPlaceHolder="请选择所属组别" style="min-width: 120px;">
+                                                        <nz-option *ngFor="let group of groups" [nzValue]="group.dditItemCode"
+                                                                   [nzLabel]="group.dditItemName"></nz-option>
+                                                    </nz-select>
+                                                </ng-container>
+                                            </td>
+                                            <td>
+                                                <ng-container *ngIf="!three.edit">
+                                                    {{three.showTab === 1 ? '是' : '否' }}
+                                                </ng-container>
+                                                <ng-container *ngIf="three.edit">
+                                                    <nz-select style="min-width: 100px;" [(ngModel)]="three.showTab" nzAllowClear
+                                                               nzPlaceHolder="请选择状态">
+                                                        <nz-option nzValue="1" nzLabel="显示"></nz-option>
+                                                        <nz-option nzValue="0" nzLabel="不显示"></nz-option>
+                                                    </nz-select>
+                                                </ng-container>
+                                            </td>
+                                            <td>
+                                                <div class="editable-row-operations">
+                                                    <ng-container *ngIf="!three.edit">
+                                                        <a (click)="editMonitorTypeDetail(three)">编辑</a>
+                                                    </ng-container>&nbsp;&nbsp;
+                                                    <ng-container *ngIf="three.edit">
+                                                        <a (click)="saveEdit(three)">保存</a>&nbsp;&nbsp;
+                                                        <nz-popconfirm [nzTitle]="'确认取消?'" (nzOnConfirm)="cancelEdit(three)">
+                                                            <a nz-popconfirm>取消</a>
+                                                        </nz-popconfirm>
+                                                    </ng-container>
+                                                    <nz-popconfirm *ngIf="!three.edit" [nzTitle]="'确定删除?'"
+                                                                   (nzOnConfirm)="deleteMonitorTypeDetail(three)">
+                                                        <a nz-popconfirm>删除</a>
+                                                    </nz-popconfirm>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                    </tbody>
+                                </nz-table>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </tbody>
+                </nz-table>
+
+                </td>
+                </tr>
+                </ng-template>
+                </tbody>
+                </nz-table>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #modalFooterItem>
+    </ng-template>
+</nz-modal>
+<!-- END: tables/basic-tables -->

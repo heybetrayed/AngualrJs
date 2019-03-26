@@ -1,0 +1,160 @@
+<section class="card">
+    <div class="card-header">
+        <div class="pull-right">
+            <nz-select style="width: 120px;" [(ngModel)]="selectTemplate" (ngModelChange)="getAllRelations()"
+                       nzAllowClear nzPlaceHolder="Choose">
+                <nz-option *ngFor="let template of templateSet" [nzValue]="template"
+                           [nzLabel]="template.aTName"></nz-option>
+            </nz-select>
+        </div>
+        <span class="cat__core__title">
+            <strong>风险评估配置</strong>
+        </span>
+    </div>
+    <div class="card-body">
+        <nz-card style="width: 100%;" *ngIf="selectTemplate!=null">
+            <nz-card-tab>
+                <nz-tabset nzSize="small" [nzTabBarExtraContent]="extraTemplate">
+                    <nz-tab *ngFor="let module of dataSet" [nzTitle]="titleTemplate"
+                            (nzClick)="changeDataSetByModule(module)">
+                        <ng-template #titleTemplate>
+                            <div>
+                                <!--{{ tab.label }} -->
+                                {{module.aMName}}
+                                <i nz-icon type="step-backward" theme="outline" (click)="closeTab(module)">x</i>
+                            </div>
+                        </ng-template>
+                    </nz-tab>
+                    <ng-template #extraTemplate>
+                        <button nz-button nzType="primary" nzSize="small" (click)="newTab()">添加模块</button>&nbsp;&nbsp;
+                        <button *ngIf="showDataSet.id != null" nz-button nzType="primary" nzSize="small" (click)="factorOpen()">添加类型</button>
+                    </ng-template>
+                </nz-tabset>
+            </nz-card-tab>
+            <nz-table *ngIf="showDataSet.id != null" #sds [nzData]="dataSet" nzSize="small" [nzPageSize]="10">
+                <thead>
+                <tr>
+                    <th nzShowExpand></th>
+                    <th>类别ID</th>
+                    <th>类别名称</th>
+                </tr>
+                </thead>
+                <tbody>
+                <ng-template ngFor let-type [ngForOf]="showDataSet.types">
+                    <tr>
+                        <td nzShowExpand [(nzExpand)]="type.expand"></td>
+                        <td>{{type.id}}</td>
+                        <td>{{type.aTypeName}}</td>
+                    </tr>
+                    <tr [nzExpand]="type.expand">
+                        <td></td>
+                        <td colspan="7">
+                            <nz-table nzSize="small" #InnerType [nzData]="dataSet" [nzShowPagination]="false">
+                <thead>
+                <tr>
+                    <th>元素ID</th>
+                    <th>元素名称</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let factor of type.factors">
+                    <td>{{factor.id}}</td>
+                    <td>{{factor.aFTitle}}</td>
+                    <td>
+                        <nz-popconfirm [nzTitle]="'确认删除?'" (nzOnConfirm)="deleteFactor(type,factor)">
+                            <a nz-popconfirm>删除</a>
+                        </nz-popconfirm>
+                    </td>
+                </tr>
+                </tbody>
+            </nz-table>
+            </td>
+            </tr>
+            </ng-template>
+            </tbody>
+            </nz-table>
+        </nz-card>
+    </div>
+
+    <!-- 添加模块抽屉 -->
+    <nz-drawer [nzClosable]="false" [nzVisible]="visible" nzPlacement="right" nzTitle="评估模块"
+               (nzOnClose)="close()">
+        <div *ngIf="checkOptionsOne.length>0">
+            <div style="border-bottom: 1px solid rgb(233, 233, 233);">
+                <label nz-checkbox [(ngModel)]="allChecked" (ngModelChange)="updateAllChecked()"
+                       [nzIndeterminate]="indeterminate">
+                    Check all
+                </label>
+            </div>
+            <br>
+            <!--<nz-checkbox-group [(ngModel)]="checkOptionsOne"-->
+            <!--(ngModelChange)="updateSingleChecked()"></nz-checkbox-group>-->
+            <label nz-checkbox *ngFor="let module of checkOptionsOne"
+                   [(ngModel)]="module.checked">{{module.aMName}}</label>
+            <button nz-button [nzSize]="small" (click)="addModule()">保存</button>
+        </div>
+    </nz-drawer>
+
+    <!-- 选择类型 因素模版 -->
+    <nz-drawer [nzClosable]="false" [nzOffsetX]="childrenVisible ? 750 : 0" [nzWidth]="320" [nzVisible]="factorVisible"
+               nzTitle="评估类型" (nzOnClose)="factorClose()">
+        <div nz-row *ngFor="let type of typeSet">
+            <button nz-button [nzSize]="small" (click)="chosenAddType(type)">
+                {{type.aTypeName}}
+            </button>
+        </div>
+        <nz-drawer [nzClosable]="false" [nzVisible]="childrenVisible" nzTitle="评估因素" (nzOnClose)="closeChildren()"
+                   [nzWidth]="800">
+            <form novalidate (ngSubmit)="searchData()" [formGroup]="searchForm">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div class="form-group">
+                            <label  class="col-md-3">名称 ：</label>
+                            <input class="form-control   col-md-8" id="taskName" nz-input name="name" type="text"
+                                   formControlName="aFTitle">
+                        </div>
+                    </div>
+                    <div class="col-lg-3" >
+                        <button nz-button nzSize="small" class="btn btn-outline-success mr-2 mb-2" type="submit">查询</button>
+                        <button nz-button nzSize="small" class="btn btn-outline-primary mr-2 mb-2" type="button"
+                                (click)="saveFactors()">保存
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <nz-table
+                    #ajaxTable
+                    nzShowSizeChanger
+                    nzSize="small"
+                    [nzFrontPagination]="true"
+                    [nzData]="AvailableFactors"
+                    [nzTotal]="total"
+                    [(nzPageIndex)]="pageIndex"
+                    [(nzPageSize)]="pageSize">
+                <thead>
+                <tr>
+                    <th nzShowCheckbox [(nzChecked)]="allTableChecked" [nzIndeterminate]="tableIndeterminate"
+                        (nzCheckedChange)="checkAll($event)"></th>
+                    <th>
+                        模版名称
+                    </th>
+                    <th>创建时间</th>
+                    <th><span>操作</span></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let data of ajaxTable.data">
+                    <td nzShowCheckbox [(nzChecked)]="data.checked"
+                        (nzCheckedChange)="refreshStatus($event)"></td>
+                    <td>{{data.aFTitle}}</td>
+                    <td>{{data.createDate | date:'yyyy-MM-dd'}}</td>
+                    <td>
+                        <a (click)="saveFactor(data)">添加因素</a>
+                    </td>
+                </tr>
+                </tbody>
+            </nz-table>
+        </nz-drawer>
+    </nz-drawer>
+</section>

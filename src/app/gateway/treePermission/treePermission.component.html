@@ -1,0 +1,67 @@
+<section class="card cat__core__card-with-sidebar cat__core__card-with-sidebar--large"  style="height: 700px">
+    <div class="cat__core__card-sidebar">
+        <form novalidate [formGroup]="searchForm">
+            <div class="cat__apps__messaging__header">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label class="form-label">请选择角色</label>
+                                <select class="form-control" formControlName="roleId" name="roleId" id="roleId"
+                                        (change)="showChack()">
+                                    <option *ngFor="let i of roles" [value]="i.id">{{i.title}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="cat__apps__messaging__list" *ngFor="let system of systems">
+                    <div *ngFor="let systemByroleId of systemsByroleId">
+                        <div class="col-xl-6 offset-xl-3" *ngIf="system.id ==systemByroleId.id ">
+                            <i class="icmn-checkmark" style="margin-top: 15px;"></i>
+                        </div>
+                    </div>
+
+                    <div class="cat__apps__messaging__tab" (click)="getPermission(system.id)   " >
+                        <span style="margin-left: 15px;">{{system.name}}</span>
+                        <div class="cat__apps__messaging__tab__content" style="margin-left: 15px;"></div>
+                    </div>
+                </div>
+
+
+            </div>
+        </form>
+    </div>
+    <div class="card-body" *ngIf="showPermission">
+        <jqxTree #myTree width="300" height="600" [hasThreeStates]="true" [checkboxes]="true" [source]="records"
+                 style="float: left;border-color: #e4e9f0;">
+        </jqxTree>
+        <div style="margin-left: 60px;  float: left;">
+            <div style="margin-top: 10px;">
+                <button class="btn btn-outline-success mr-2 mb-2" type="button" (click)="collapseAll()">全部合并</button>
+            </div>
+            <div style="margin-top: 10px;">
+                <button class="btn btn-outline-success mr-2 mb-2" type="button" (click)="expandAll()">全部展开</button>
+            </div>
+            <div style="margin-top: 10px;">
+                <button class="btn btn-outline-warning mr-2 mb-2" type="button" (click)="checkAll()">全部勾选</button>
+            </div>
+            <div style="margin-top: 10px;">
+                <button class="btn btn-outline-warning mr-2 mb-2" type="button" (click)="uncheckAll()">全部取消</button>
+            </div>
+            <div style="margin-top: 10px;">
+                <button class="btn btn-outline-primary mr-2 mb-2" type="button" (click)="save()">保存</button>
+            </div>
+        </div>
+        <div style="margin-left: 60px;float: left; display: none;">
+            <div style="margin-top: 10px;">
+                <jqxCheckBox (onChange)="myCheckBoxOnChange($event)" [checked]="true">
+                    Three check States
+                </jqxCheckBox>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- END: components/carousel -->

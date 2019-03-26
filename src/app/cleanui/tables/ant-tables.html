@@ -1,0 +1,101 @@
+<!-- START: tables/basic-tables -->
+<section class="card">
+    <div class="card-header">
+        <span class="cat__core__title">
+            <strong>Ant Tables</strong>
+            <a href="http://ng.ant.design/components/table/zh#components-table-demo-row-selection-custom"
+               target="_blank" class="btn btn-sm btn-primary ml-2">Official Documentation <i class="icmn-link ml-1"><!-- --></i></a>
+        </span>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <h5 class="text-black"><strong>Responsive Table</strong></h5>
+                <div class="table-responsive mb-5">
+                    <button nz-button [disabled]="disabledButton" nzType="primary" [nzLoading]="operating"
+                            (click)="operateData()">
+                        Reload
+                    </button>
+                    <nz-table
+                            #ajaxTable
+                           nzShowSizeChanger
+                            nzBordered
+                            nzSize="small"
+                            [nzFrontPagination]="false"
+                            [nzData]="dataSet"
+                            [nzLoading]="loading"
+                            [nzTotal]="total"
+                            [(nzPageIndex)]="pageIndex"
+                            [(nzPageSize)]="pageSize"
+                            (nzPageIndexChange)="searchData()"
+                            (nzPageSizeChange)="searchData(true)">
+                        <thead (nzSortChange)="sort($event)" nzSingleSort>
+                        <tr>
+                            <th nzShowCheckbox [(nzChecked)]="allChecked" [nzIndeterminate]="indeterminate"
+                                (nzCheckedChange)="checkAll($event)"></th>
+                            <th nzShowSort nzSortKey="id">id</th>
+                            <th nzShowSort nzSortKey="login">login</th>
+                            <th nzShowSort nzSortKey="firstName">firstName</th>
+                            <th nzShowFilter [nzFilters]="filterGender" (nzFilterChange)="updateFilter($event)">gender
+                            </th>
+                            <th><span>操作</span></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let data of ajaxTable.data">
+                            <td nzShowCheckbox [(nzChecked)]="data.checked"
+                                (nzCheckedChange)="refreshStatus($event)"></td>
+                            <td>{{data.id}}</td>
+                            <td>{{data.login}}</td>
+                            <td>{{data.firstName}}</td>
+                            <td>{{data.firstName}}</td>
+                            <td>
+                                <nz-popconfirm [nzTitle]="'Sure to delete?'" (nzOnConfirm)="deleteRow(data.id)">
+                                    <a nz-popconfirm>Delete</a>
+                                </nz-popconfirm>
+                                <!--<button nz-popconfirm nzTitle="Are you sure delete this use?" (nzOnConfirm)="confirm(data)" (nzOnCancel)="cancel()" nzPlacement="topLeft" nz-button>删除</button>-->
+                            </td>
+                        </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <button nz-button nzType="primary" (click)="setColumn()">设置单元格列数</button>
+            <button nz-button nzType="primary" (click)="addRow()">新增行</button>
+            <button nz-button nzType="primary" (click)="saveTable()">保存</button>
+
+            <!--<table class="createTable" #createTable>-->
+                <!--<tbody>-->
+                <!--<tr *ngFor="let row of tableObj ">-->
+                    <!--<td *ngFor="let cell of row"><input [(ngModel)]="cell.cellvalue" value=""/></td>-->
+                <!--</tr>-->
+                <!--</tbody>-->
+            <!--</table>-->
+
+            <nz-table
+                    #createTable
+                    nzSize="small"
+                    [nzData]="tableObj">
+                <!--<thead>-->
+                <!--<tr>-->
+                    <!--<th>Name</th>-->
+                    <!--<th>Age</th>-->
+                    <!--<th>Address</th>-->
+                <!--</tr>-->
+                <!--</thead>-->
+                <tbody>
+                <tr *ngFor="let row of tableObj">
+                    <td *ngFor="let cell of row"><input [(ngModel)]="cell.cellvalue" value=""/>
+                </tr>
+                </tbody>
+            </nz-table>
+
+            <div>{{ tableObj | json }}</div>
+        </div>
+
+    </div>
+</section>
+<!-- END: tables/basic-tables -->

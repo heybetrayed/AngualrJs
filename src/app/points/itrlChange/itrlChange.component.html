@@ -1,0 +1,377 @@
+<!-- START: tables/datatables -->
+<section class="card">
+    <div class="card-header divCenter">
+        <form novalidate (ngSubmit)="search()" [formGroup]="searchForm">
+            <div class="row">
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>规则序号</label>
+                        <input class="form-control" id="changeNo" name="changeNo" type="text"
+                               formControlName="changeNo">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>规则状态</label>
+                        <select class="form-control" name="changeStatus" id="changeStatus"
+                                formControlName="changeStatus">
+                            <option value="">全部</option>
+                            <option value="0">禁用</option>
+                            <option value="1">启用</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>规则名称</label>
+                        <input class="form-control" id="changeName" name="changeName" type="text"
+                               formControlName="changeName">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>使用产品</label>
+                        <select class="form-control" name="productId" id="productId" formControlName="productId">
+                            <option value="">全部</option>
+                            <option *ngFor="let product of noProductArr;let idx=index;"
+                                    [value]="product.sdfCreLineCode">
+                                {{product.sdfCreditChinese}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <button class="btn btn-outline-success mr-2 mb-2" type="submit" style="margin-top:12%;">查询</button>
+                </div>
+
+                <div class="col-lg-2">
+                    <div class="form-group" style="margin-top:12%;">
+                        <label>规则数:</label>
+                        {{sumChange}}
+                    </div>
+                    <div class="form-group">
+                        <label>启用规则数:</label>
+                        {{startUsingChange}}
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="row">
+
+                    <button class="btn btn-outline-primary mr-2 mb-2" type="button"
+                            (click)="showAddModal(true)">新增
+                    </button>
+
+                    <button class="btn btn-outline-warning mr-2 mb-2" type="button"
+                            (click)="getDdit(changeId)">编辑
+                    </button>
+
+                    <button class="btn btn-outline-danger mr-2 mb-2" type="button"
+                            (click)="showJoinLimit(changeId)">关联限制规则
+                    </button>
+
+                    <button class="btn btn-outline-danger mr-2 mb-2" type="button"
+                            (click)="showJoinProduct(changeId)">关联产品
+                    </button>
+
+            </div>
+
+
+        </form>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="mb-5">
+                    <table datatable [dtOptions]="dtOptions" class="table table-hover nowrap" width="100%"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新增编辑变动规则-->
+    <ng-template #content let-c="close">
+        <form novalidate (ngSubmit)="saveLimit()" [formGroup]="saveForm">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">{{titleName}}规则</h5>
+                <button type="button" class="close" aria-label="Close" (click)="c('Close click')"
+                        style="margin-right: 2%;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <input type="hidden" name="id" id="id" formControlName="id">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label">规则序号</label>
+                            <input id="changeNoModal" class="form-control" type="text"
+                                   formControlName="changeNo" name="changeNo" (change)="checkNo()">
+                            <div class="error"
+                                 *ngIf="saveForm.get('changeNo').invalid && saveForm.get('changeNo').touched">
+                                规则序号不能为空，且长度必须为6字符
+                            </div>
+                            <div class="error"
+                                 *ngIf="flag">
+                                规则序号已重复
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label">规则名称</label>
+                            <input id="changeNameModal" class="form-control" type="text"
+                                   formControlName="changeName" name="changeName">
+                            <div class="error"
+                                 *ngIf="saveForm.get('changeName').invalid && saveForm.get('changeName').touched">
+                                规则名称不能为空，长度最低2位
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label" for="changeStatus">规则状态</label>
+                            <select name="changeStatus" class="form-control select2" formControlName="changeStatus">
+                                <option value="0">禁用</option>
+                                <option value="1">启用</option>
+                            </select>
+                            <div class="error"
+                                 *ngIf="saveForm.get('changeStatus').invalid && saveForm.get('changeStatus').touched">
+                                请选择字段状态
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" *ngFor="let i of limitTy;let idx=index;">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label">积分类型</label>
+                            <select [(ngModel)]="i.itrlTy" [ngModelOptions]="{standalone: true}"
+                                    class="form-control select2" (change)="checkItrlTy(idx)">
+                                <option *ngFor="let j of itrlTyArray;let tyIdx=index;" [value]="j.id">{{j.typeName}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label">对比符号</label>
+                            <select [(ngModel)]="i.changeSign" [ngModelOptions]="{standalone: true}"
+                                    class="form-control select2">
+                                <option value="+">+(加)</option>
+                                <option value="-">-(减)</option>
+                                <option value="*">*(乘)</option>
+                                <option value="/">/(除)</option>
+                                <option value="%">%(百分)</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <fieldset class="form-group">
+                            <label class="form-label" for="money-mask-input">规则积分</label>
+                            <input [(ngModel)]="i.changeScore" [ngModelOptions]="{standalone: true}"
+                                   id="money-mask-input" class="form-control" onkeyup="value=value.replace(/[^\d]/g,'')"
+                                   ng-pattern="/[^a-zA-Z]/"
+                                   type="text">
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label" for="changeStatus">状态</label>
+                            <select [(ngModel)]="i.typeStatus" [ngModelOptions]="{standalone: true}"
+                                    class="form-control select2">
+                                <option value="0">禁用</option>
+                                <option value="1">启用</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4" style="margin-top: 3%;">
+                        <button type="button" *ngIf="idx==0 " class="btn btn-primary width-150" (click)="addInput()">
+                            +
+                        </button>
+
+                        <button type="button" *ngIf="idx >0 " class="btn btn-primary width-150" (click)="addRemove(i)">
+                            -
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label">客户账户状态</label>
+                            <select name="changeMemStatus" class="form-control select2"
+                                    formControlName="changeMemStatus">
+                                <option value="0">禁用</option>
+                                <option value="1">启用</option>
+                            </select>
+                            <div class="error"
+                                 *ngIf="saveForm.get('changeMemStatus').invalid && saveForm.get('changeMemStatus').touched">
+                                请选择有效的数据
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <div class="form-group">
+
+                                <label class="form-label">调用频率</label>
+                                <input id="changeFrequencyModal" class="form-control" type="text"
+                                       formControlName="changeFrequency" name="changeFrequency"> (0不限制调用次数)
+                                <div class="error"
+                                     *ngIf="saveForm.get('changeFrequency').invalid && saveForm.get('changeFrequency').touched">
+                                    调用频率必须大于等于0
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <strong>注:各类分只可填写数字,可为负,表示减少分数</strong><br/>
+                    <label class="form-label">规则说明</label>
+                    <textarea class="form-control" formControlName="changeRemark"></textarea>
+                    <div class="error"
+                         *ngIf="saveForm.get('changeRemark').invalid && saveForm.get('changeRemark').touched">
+                        说明不能为空，长度在1-100之间
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary width-150" [disabled]="saveForm.invalid || flag">
+                    确认
+                </button>
+                <button type="button" class="btn" data-dismiss="modal" (click)="c('Close click')">关闭
+                </button>
+            </div>
+        </form>
+
+
+    </ng-template>
+
+    <!-- 关联限制规则-->
+    <ng-template #joinLimit let-c="close">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" (click)="c('Close click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form novalidate (ngSubmit)="searchParam()" [formGroup]="searchLimitForm">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label>规则序号</label>
+                            <input class="form-control" id="limitNo" name="limitNo" type="text"
+                                   formControlName="limitNo">
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label for="limitStatus">规则状态</label>
+                            <select class="form-control" name="limitStatus" id="limitStatus"
+                                    formControlName="limitStatus">
+                                <option value="">全部</option>
+                                <option value="0">禁用</option>
+                                <option value="1">启用</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label>规则名称</label>
+                            <input class="form-control" id="limitName" name="limitName" type="text"
+                                   formControlName="limitName">
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label for="itrlTypeId">积分类别</label>
+                            <select class="form-control" name="itrlTypeId" id="itrlTypeId" formControlName="itrlTypeId">
+                                <option value="">全部</option>
+                                <option *ngFor="let j of itrlTyArray;let tyIdx=index;" [value]="j.id">{{j.typeName}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <button class="btn btn-outline-success mr-2 mb-2" type="submit"
+                                style="margin-top:20%;display:inline-block;">查询
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <form novalidate (ngSubmit)="saveJoinParam()" [formGroup]="saveLimitForm">
+                <div class="row">
+                    <div class="form-group" style="width: 40%;float: left;margin-left: 3%">
+                        <label>未选中限制规则</label>
+                        <select class="form-control" multiple="">
+                            <option *ngFor="let param of noLimitArr;let idx=index;" (click)="addCopyParam(idx)">
+                                {{param.limitNo}} &nbsp;&nbsp;&nbsp;{{param.limitName}}
+                            </option>
+                        </select>
+                    </div>
+                    &nbsp;&nbsp;&nbsp;
+                    <div class="form-group" style="width: 40%;float: left;margin-left: 5%">
+                        <label>已选中限制规则</label>
+                        <select class="form-control" multiple="">
+                            <option *ngFor="let param of limitArr;let idx=index;" (click)="removeParam(idx)">
+                                {{param.limitNo}} &nbsp;&nbsp;&nbsp; {{param.limitName}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary width-150" [disabled]="saveLimitForm.invalid">
+                        确认
+                    </button>
+                    <button type="button" class="btn" data-dismiss="modal" (click)="c('Close click')">关闭
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+
+    </ng-template>
+
+    <!-- 关联产品-->
+    <ng-template #joinProduct let-c="close">
+        <form novalidate (ngSubmit)="saveProduct()" [formGroup]="saveProductForm">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" (click)="c('Close click')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-10">
+                    <div class="form-group">
+                        <label class="form-label">关联产品:</label>
+                        <select class="select2" id="select2" multiple>
+                            <option *ngFor="let product of noProductArr;let idx=index;"
+                                    [value]="product.sdfCreLineCode">
+                                {{product.sdfCreditChinese}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary width-150" [disabled]="saveProductForm.invalid">
+                    确认
+                </button>
+                <button type="button" class="btn" data-dismiss="modal" (click)="c('Close click')">关闭
+                </button>
+            </div>
+        </form>
+    </ng-template>
+
+</section>
+<!-- END: tables/datatables -->

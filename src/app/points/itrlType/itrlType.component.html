@@ -1,0 +1,112 @@
+<!-- START: tables/datatables -->
+<section class="card">
+    <div class="card-header">
+        <form novalidate (ngSubmit)="search()" [formGroup]="searchForm">
+            <div class="row">
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>积分类型名称</label>
+                        <input class="form-control" name="typeName" type="text" formControlName="typeName">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>积分类型状态</label>
+                        <select class="form-control" name="typeStatus" formControlName="typeStatus">
+                            <option value="">全部</option>
+                            <option value="0">禁用</option>
+                            <option value="1">启用</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>财务记账</label>
+                        <select class="form-control" name="financialSign" formControlName="financialSign">
+                            <option value="">全部</option>
+                            <option value="0">不记账</option>
+                            <option value="1">记账</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <button class="btn btn-outline-success mr-2 mb-2" type="submit" style="margin-top: 4%;">查询</button>
+                    <button class="btn btn-outline-primary mr-2 mb-2" type="button" style="margin-top: 4%;"
+                            (click)="showAddModal(true)">新增
+                    </button>
+                    <button class="btn btn-outline-warning mr-2 mb-2" type="button" style="margin-top: 4%;"
+                            (click)="getDdit(itrlTypeId)">编辑
+                    </button>
+                    <!--<button class="btn btn-outline-danger mr-2 mb-2" type="button" style="margin-top: 4%;"-->
+                            <!--(click)="downloadExcel()">-->
+                        <!--导出Excel-->
+                    <!--</button>-->
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="mb-5">
+                    <table datatable [dtOptions]="dtOptions" class="table table-hover nowrap" width="100%"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-template #content let-c="close">
+        <form novalidate (ngSubmit)="saveDdit()" [formGroup]="saveForm">
+            <input type="hidden" name="id" id="id" formControlName="id">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">{{titleName}}积分类型</h5>
+                <button type="button" class="close" aria-label="Close" (click)="c('Close click')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-label">积分类型名称:</label>
+                        <input class="form-control" type="text" id="typeName"
+                               formControlName="typeName">
+                        <div class="error" *ngIf="saveForm.get('typeName').invalid && saveForm.get('typeName').touched">
+                            积分类型名称不能为空
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-label">财务记账:</label>
+                        <select class="form-control select2" formControlName="financialSign">
+                            <option value="0">不记账</option>
+                            <option value="1">记账</option>
+                        </select>
+                        <div class="error"
+                             *ngIf="saveForm.get('financialSign').invalid && saveForm.get('financialSign').touched">
+                            请选择财务记账
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-label">积分类型状态:</label>
+                        <select class="form-control select2" formControlName="typeStatus">
+                            <option value="0">禁用</option>
+                            <option value="1">启用</option>
+                        </select>
+                        <div class="error"
+                             *ngIf="saveForm.get('financialSign').invalid && saveForm.get('financialSign').touched">
+                            请选择财务记账
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary width-150" [disabled]="saveForm.invalid || flag">确认
+                </button>
+                <button type="button" class="btn" data-dismiss="modal" (click)="c('Close click')">关闭</button>
+            </div>
+        </form>
+    </ng-template>
+</section>
+<!-- END: tables/datatables -->

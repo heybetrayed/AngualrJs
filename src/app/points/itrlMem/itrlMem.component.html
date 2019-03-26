@@ -1,0 +1,146 @@
+<!-- START: tables/datatables -->
+<section class="card">
+    <div class="card-header">
+        <form novalidate (ngSubmit)="search()" [formGroup]="searchForm">
+            <div class="row">
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>客户姓名</label>
+                        <input class="form-control" id="memName" name="memName" type="text"
+                               formControlName="memName">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>客户编号</label>
+                        <input class="form-control" id="memNo" name="memNo" type="text"
+                               formControlName="memNo">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>客户手机号</label>
+                        <input class="form-control" id="phone-mask-input" name="memPhone" type="text"
+                               formControlName="memPhone">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label for="startEndTime">创建时间</label>
+                        <input id="startEndTime" name="startEndTime" class="form-control" type="text"
+                               formControlName="startEndTime"/>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <button class="btn btn-outline-success mr-2 mb-2" type="submit" style="margin-top: 4%;">
+                        查询
+                    </button>
+                    <button class="btn btn-outline-warning mr-2 mb-2" type="button" style="margin-top: 4%;"
+                            (click)="queryDetail(itrlMemId)">
+                        详情
+                    </button>
+
+                    <button class="btn btn-outline-primary mr-2 mb-2" type="button"
+                            style="margin-top: 4%;" (click)="showAddModal(true)">新增
+                    </button>
+                </div>
+
+                <!--<div class="col-lg-4"  >
+                    <input type="file" ng2FileSelect [uploader]="uploader" class="dropify"
+                           (change)="selectedFileOnChanged($event)"/>
+                    <button type="button" (click)="uploadFile()">上传</button>
+                </div>-->
+            </div>
+        </form>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="mb-5">
+                    <table datatable [dtOptions]="dtOptions" class="table table-hover nowrap" width="100%"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <ng-template #content let-c="close">
+        <form (ngSubmit)="saveMem()" [formGroup]="saveForm">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">新增客户</h5>
+                <button type="button" class="close" aria-label="Close" (click)="c('Close click')"
+                        style="margin-right: 2%;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="memberNoModal">统一客户号</label>
+                            <input id="memberNoModal" class="form-control" type="text"
+                                   formControlName="memNo" name="memNo" (change)="checkItrlMemNo()">
+                            <div class="error"
+                                 *ngIf="saveForm.get('memNo').invalid && saveForm.get('memNo').touched">
+                                请填写长度为2-100位统一客户号
+                            </div>
+                            <div class="error"
+                                 *ngIf="flag">
+                                统一客户号已重复
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="memberNameModal">客户名称</label>
+                            <input id="memberNameModal" class="form-control" type="text"
+                                   formControlName="memName" name="memName">
+                            <div class="error"
+                                 *ngIf="saveForm.get('memName').invalid && saveForm.get('memName').touched">
+                                请填写长度为2-50位的客户名称
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="memberPhoneModal">手机号</label>
+                            <input id="memberPhoneModal" class="form-control" type="text"
+                                   formControlName="memPhone" name="memPhone">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="memAccountTypeModal">用户类别</label>
+                            <select name="memAccountType" id="memAccountTypeModal" class="form-control select2"
+                                    formControlName="memAccountType">
+                                <option value="0">体验用户</option>
+                                <option value="1">实名用户</option>
+                            </select>
+                            <div class="error"
+                                 *ngIf="saveForm.get('memAccountType').invalid && saveForm.get('memAccountType').touched">
+                                请选择用户类别
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!--<div class="row">
+                    <button class="btn btn-outline-success mr-2 mb-2" type="submit" style="margin-top: 15%;">提交
+                    </button>
+                    <button type="button" class="btn" data-dismiss="modal" (click)="c('Close click')">关闭</button>
+                </div>-->
+                <button type="submit" class="btn btn-primary width-150" [disabled]="saveForm.invalid || flag">
+                    提交
+                </button>
+                <button type="button" class="btn" data-dismiss="modal" (click)="c('Close click')">关闭
+                </button>
+            </div>
+        </form>
+
+
+    </ng-template>
+</section>

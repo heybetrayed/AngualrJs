@@ -1,0 +1,276 @@
+<section class="card">
+    <div class="card-header">
+        <form novalidate (ngSubmit)="searchData(true)" [formGroup]="searchForm">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label for="name" class="col-md-4">项目名称</label>
+                        <input class="form-control col-md-8" nz-input id="name" name="name" type="text"
+                               formControlName="name"/>
+                    </div>
+                </div>
+                <div nz-col nzXs="3" nzSm="3" nzMd="3" nzLg="3" nzXl="2">
+                    <button nz-button class="btn btn-outline-success mr-2 mb-2" type="submit">查&nbsp;&nbsp;询</button>
+                </div>
+                <div nz-col nzXs="3" nzSm="3" nzMd="3" nzLg="3" nzXl="2">
+                    <button nz-button class="btn btn-outline-primary mr-2 mb-2"
+                            (click)="createRecord()">
+                        新&nbsp;&nbsp;增
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="card-body">
+        <nz-card style="width: 100%;">
+            <nz-card-tab>
+                <nz-tabset nzSize="small" nzSelectedIndex="0">
+                    <nz-tab *ngFor="let reportType of reportTypes"
+                            [nzTitle]="reportType.mTypeName" (nzClick)="selectType(reportType)"></nz-tab>
+                </nz-tabset>
+            </nz-card-tab>
+            <nz-table #basicTable [nzData]="riskreportsRecord"
+                      nzShowSizeChanger
+                      nzBordered
+                      nzSize="small"
+                      [nzFrontPagination]="false"
+                      [nzLoading]="loading"
+                      [nzTotal]="total"
+                      [(nzPageIndex)]="pageIndex"
+                      [(nzPageSize)]="pageSize"
+                      (nzPageIndexChange)="searchData()"
+                      (nzPageSizeChange)="searchData(true)">
+                <thead (nzSortChange)="sort($event)" nzSingleSort>
+                <tr>
+                    <th nzShowCheckbox [(nzChecked)]="allChecked" [nzIndeterminate]="indeterminate"
+                        (nzCheckedChange)="checkAll($event)"></th>
+                    <th>项目名称</th>
+                    <th>状态</th>
+                    <th nzShowSort nzSortKey="time">创建时间</th>
+                    <th>说明</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let data of basicTable.data">
+                    <td nzShowCheckbox [(nzChecked)]="data.checked"
+                        (nzCheckedChange)="refreshStatus($event)"></td>
+                    <td>{{data.name}}</td>
+                    <td>{{flowStatus[data.flowable[0]['status']]}}</td>
+                    <td>{{data.createDate | date:'yyyy-MM-dd'}}</td>
+                    <td>{{data.comment}}</td>
+                    <td>
+                        <a (click)="lookAnalyzes(data)" *ngIf="data.flowable[0]['status'] != 0">查看</a>
+                        &nbsp;&nbsp;
+                        <a (click)="showAnalyzes(data)" *ngIf="data.flowable[0]['status'] == 0">编辑</a>
+                    </td>
+                </tr>
+                </tbody>
+            </nz-table>
+        </nz-card>
+    </div>
+
+</section>
+
+<!--新增风险报告分析-->
+<nz-modal [(nzVisible)]="isSaveRecord"
+          [nzTitle]="addRecordTitle"
+          [nzWidth]="800"
+          [nzContent]="addRecordContent"
+          [nzFooter]="addRecordFooter"
+          (nzOnCancel)="handleAddRecordCancel()">
+
+    <ng-template #addRecordTitle>
+        新增记录
+    </ng-template>
+
+    <ng-template #addRecordContent let-c="close">
+        <form nz-form [formGroup]="saveReportRecord">
+            <nz-form-item>
+                <nz-form-label [nzSpan]="7" nzRequired>任务</nz-form-label>
+                <nz-form-control [nzSpan]="12">
+                    <nz-select formControlName="taskId" nzAllowClear nzPlaceHolder="请选择任务">
+                        <nz-option *ngFor="let task of tasks" [nzValue]="task.id" [nzLabel]="task.taskName"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSpan]="7" nzRequired>记录名称</nz-form-label>
+                <nz-form-control [nzSpan]="12">
+                    <input nz-input id="recordName" formControlName="name" placeholder="请填写记录名称">
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSpan]="7" nzRequired>说明</nz-form-label>
+                <nz-form-control [nzSpan]="12">
+                    <input nz-input id="recordComment" formControlName="comment" placeholder="填写说明">
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSpan]="7" nzFor="modelId" nzRequired>流程</nz-form-label>
+                <nz-form-control [nzSpan]="10">
+                    <nz-select id="modelId" formControlName="modelId" nzPlaceHolder="请选择流程" [(ngModel)]="selectFlow"
+                               nzAllowClear>
+                        <nz-option *ngFor="let flow of flowAll" [nzValue]="flow.id" [nzLabel]="flow.name"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+                <nz-form-control [nzSpan]="2">
+                    <a style="background-color: #FFFFFF;margin-left: 5px;" nzType="primary" (click)="showBpmnModal()">
+                        <i nz-icon type="deployment-unit" theme="outline"></i>
+                    </a>
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+    </ng-template>
+    <ng-template #addRecordFooter>
+        <button nz-button nzType="primary" [disabled]="!saveReportRecord.valid" (click)="saveRecord()">保存</button>
+    </ng-template>
+</nz-modal>
+
+<!--新增风险报告分析-->
+<nz-modal [(nzVisible)]="isSaveAnalyzes"
+          [nzTitle]="modalTitle"
+          [nzContent]="modalContent"
+          [nzFooter]="modalFooter"
+          [nzWidth]="1000"
+          (nzOnCancel)="handleSaveAnalyzesCancel()">
+
+    <ng-template #modalTitle>
+        新增记录
+    </ng-template>
+
+    <ng-template #modalContent let-c="close">
+        <nz-layout style="background: #fff">
+            <nz-sider [nzWidth]="450" style="background:#fff"
+                      [ngStyle]="{'display':monitorLeftInfos.length === 0 ? 'none' : 'block'}">
+                <nz-collapse *ngFor="let riskReport of monitorLeftInfos;index as j;">
+                    <nz-collapse-panel *ngFor="let tableInfo of riskReport.tableInfos"
+                                       [nzHeader]="tableInfo.tableName" nzActive="{{j==0}}">
+                        <div class="ant-table ant-table-small">
+                            <div class="ant-table-content">
+                                <div class="ant-table-body ng-star-inserted">
+                                    <table>
+                                        <tbody class="ant-table-tbody">
+                                        <tr *ngFor="let row of tableInfo.rows" class="ant-table-row ng-star-inserted">
+                                            <td *ngFor="let cell of row | slice:2; index as i;"
+                                                class="ant-table-row-expand-icon-cell ng-star-inserted"
+                                                style="border: 1px solid #e8e8e8">{{cell}}
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </nz-collapse-panel>
+                </nz-collapse>
+            </nz-sider>
+            <nz-content style="padding: 5px; min-height: 280px;">
+                <nz-tabset nzSize="small" [(nzSelectedIndex)]="index">
+                    <nz-tab *ngFor="let monitorInfo of monitorRightInfos"
+                            [nzTitle]="monitorInfo.monitorTypeDetail.mTypeName"
+                            (nzClick)="selectInofo(monitorInfo)"></nz-tab>
+                </nz-tabset>
+                <ueditor #uEditor style="width: 480px" [config]="config" [(ngModel)]="inputValue"
+                         (ngModelChange)="saveContent($event)"></ueditor>
+            </nz-content>
+        </nz-layout>
+    </ng-template>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="primary" (click)="saveAnalyzes('0')">保存</button>
+        <button nz-button nzType="primary" (click)="saveAnalyzes('1')">发送</button>
+    </ng-template>
+</nz-modal>
+
+<!--查看风险报告分析-->
+<nz-modal [(nzVisible)]="isShowAnalyzes"
+          [nzTitle]="modalShowTitle"
+          [nzContent]="modalShowContent"
+          [nzFooter]="modalShowFooter"
+          [nzWidth]="1000"
+          (nzOnCancel)="handleShowAnalyzesCancel()">
+
+    <ng-template #modalShowTitle>
+        查看记录
+    </ng-template>
+
+    <ng-template #modalShowContent let-c="close">
+        <nz-layout style="background: #fff">
+            <nz-sider [nzWidth]="450" style="background:#fff"
+                      [ngStyle]="{'display':monitorLeftInfos.length === 0 ? 'none' : 'block'}">
+                <nz-collapse *ngFor="let riskReport of monitorLeftInfos;index as j;">
+                    <nz-collapse-panel *ngFor="let tableInfo of riskReport.tableInfos"
+                                       [nzHeader]="tableInfo.tableName" nzActive="{{j==0}}">
+                        <div class="ant-table ant-table-small">
+                            <div class="ant-table-content">
+                                <div class="ant-table-body ng-star-inserted">
+                                    <table>
+                                        <tbody class="ant-table-tbody">
+                                        <tr *ngFor="let row of tableInfo.rows" class="ant-table-row ng-star-inserted">
+                                            <td *ngFor="let cell of row | slice:2; index as i;"
+                                                class="ant-table-row-expand-icon-cell ng-star-inserted"
+                                                style="border: 1px solid #e8e8e8">{{cell}}
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </nz-collapse-panel>
+                </nz-collapse>
+            </nz-sider>
+            <nz-content style="padding: 5px; min-height: 280px;">
+                <nz-tabset nzSize="small" [(nzSelectedIndex)]="index">
+                    <nz-tab *ngFor="let monitorInfo of monitorRightInfos"
+                            [nzTitle]="monitorInfo.monitorTypeDetail.mTypeName"
+                            (nzClick)="selectShowInfo(monitorInfo)"></nz-tab>
+                </nz-tabset>
+                <div [innerHTML]="showValue">
+                </div>
+            </nz-content>
+        </nz-layout>
+    </ng-template>
+
+    <ng-template #modalShowFooter>
+        <!--<button nz-button nzType="primary" (click)="saveAnalyzes()">保存</button>-->
+        <button nz-button nzType="primary" (click)="showWorkflowList()">审批历史</button>
+        <button nz-button nzType="primary" (click)="showWorkflowImg()">流程图</button>
+    </ng-template>
+</nz-modal>
+
+<!--流程绘制模版-->
+<ng-template #activitiContent let-c="close">
+    <app-modeler [acurl]="iframe"></app-modeler>
+</ng-template>
+
+
+<!--查看流程图-->
+<ng-template #tplworkflowImg>
+    <img src="/activitios/api/workflow/histry/trace/{{processInstId}}" style="width: 550px;"/>
+</ng-template>
+
+<!--查看审批记录-->
+<ng-template #tplworkflowList>
+    <nz-table #historyTaskTable [nzData]="dataSet" nzFooter="" nzTitle="" nzSize="small" nzBordered="bordered"
+              nzShowPagination="false">
+        <thead>
+        <tr>
+            <th>任务名称</th>
+            <th>处理时间</th>
+            <th>执行人</th>
+            <th>备注</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of historyTaskTable.data">
+            <td>{{data.name}}</td>
+            <td>{{data.endTime | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+            <td>{{data.assignee}}</td>
+            <td>{{data.reason == 'completed' ? '通过' : data.reason}}</td>
+        </tr>
+        </tbody>
+    </nz-table>
+</ng-template>

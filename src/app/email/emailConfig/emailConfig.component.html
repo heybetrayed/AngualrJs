@@ -1,0 +1,148 @@
+<!-- START: tables/datatables -->
+<section class="card">
+
+    <div class="card-header">
+        <form novalidate (ngSubmit)="search()" [formGroup]="searchForm">
+            <div class="row">
+
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label for="mailServerHost">邮件服务 ：</label>
+                        <input class="form-control" id="mailServerHost" name="mailServerHost" type="text"
+                               formControlName="mailServerHost"/>
+                    </div>
+                </div>
+
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label for="mailUserNmae">邮件用户名 ：</label>
+                        <input class="form-control" id="mailUserNmae" name="mailUserNmae" type="text"
+                               formControlName="mailUserNmae"/>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label for="mailStatus">用户状态</label>
+                        <select class="form-control" name="mailStatus" id="mailStatus" formControlName="mailStatus">
+                            <option value="1">启用</option>
+                            <option value="0">禁用</option>
+                        </select>
+                    </div>
+                </div>
+
+
+
+                <div class="col-lg-3" style="margin-top: 2%;">
+                    <button class="btn btn-outline-success mr-2 mb-2" type="submit">查询</button>
+                    <button class="btn btn-outline-primary mr-2 mb-2" id="addData" type="button"
+                            (click)="showAddMailConfig()">新增
+                    </button>
+                    <button class="btn btn-outline-warning mr-2 mb-2" type="button"
+                            (click)="showEditMailConfig(mailConfigId)">
+                        编辑
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="mb-5">
+                    <table datatable [dtOptions]="dtOptions" class="table table-hover nowrap" width="100%"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--新增邮件参数配置页面-->
+    <ng-template #content let-c="close">
+        <form novalidate (ngSubmit)="saveMailConfig()" [formGroup]="saveForm">
+            <input type="hidden" name="id" id="mailConfigId" formControlName="id">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">新增邮件参数配置</h5>
+                <button type="button" class="close" aria-label="Close" (click)="c('Close click')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="mailServerHostModal">邮件服务器地址</label>
+                            <input id="mailServerHostModal" class="form-control" type="text" formControlName="mailServerHost">
+                            <div class="error" *ngIf="saveForm.get('mailServerHost').invalid && saveForm.get('mailServerHost').touched">
+                                字段名称不能为空，且长度在2-36字符之间
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="mailPortModal">邮件端口</label>
+                            <input id="mailPortModal" class="form-control" type="text" formControlName="mailPort">
+                            <div class="error"
+                                 *ngIf="saveForm.get('mailPort').invalid && saveForm.get('mailPort').touched">
+                                邮件端口不能为空
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="mailUserNmaeModal">邮件用户名</label>
+                            <input id="mailUserNmaeModal" class="form-control" type="text" formControlName="mailUserNmae">
+                            <div class="error"
+                                 *ngIf="saveForm.get('mailUserNmae').invalid && saveForm.get('mailUserNmae').touched">
+                                邮件用户名不能为空
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="mailPasswordModal">邮件授权码</label>
+                            <input id="mailPasswordModal" class="form-control" type="text" formControlName="mailPassword" >
+                            <div class="error"
+                                 *ngIf="saveForm.get('mailPassword').invalid && saveForm.get('mailPassword').touched">
+                                邮件授权码不能为空
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="mailStatusModal">状态</label>
+                            <select id="mailStatusModal" name="mailStatus" class="form-control"
+                                    formControlName="mailStatus">
+                                <option value="1">启用</option>
+                                <option value="0">禁用</option>
+                            </select>
+                            <div class="error"
+                                 *ngIf="saveForm.get('mailStatus').invalid && saveForm.get('mailStatus').touched">
+                                请选择状态
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary width-150" [disabled]="saveForm.invalid">保存</button>
+                <button type="button" class="btn" data-dismiss="modal" (click)="c('Close click')">关闭</button>
+            </div>
+        </form>
+    </ng-template>
+
+
+
+</section>
+<!-- END: tables/datatables -->

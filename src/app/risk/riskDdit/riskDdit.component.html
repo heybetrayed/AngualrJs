@@ -1,0 +1,267 @@
+<!-- START: tables/basic-tables -->
+<section class="card">
+    <div class="card-header">
+        <form novalidate (ngSubmit)="searchData(true)" [formGroup]="searchForm">
+            <div nz-row>
+                <div nz-col nzXs="6" nzSm="6" nzMd="6" nzLg="6" nzXl="5">
+                    <div class="form-group">
+                        <label>字典编号：</label>
+                        <input class="form-control col-md-6" nz-input id="dditCode" name="dditCode" type="text"
+                               formControlName="dditCode">
+                    </div>
+                </div>
+                <div nz-col nzXs="6" nzSm="6" nzMd="6" nzLg="6" nzXl="5">
+                    <div class="form-group">
+                        <label>字典名称：</label>
+                        <input class="form-control col-md-6" nz-input id="dditName" name="dditName" type="text"
+                               formControlName="dditName">
+                    </div>
+                </div>
+                <div nz-col nzXs="6" nzSm="6" nzMd="6" nzLg="6" nzXl="5">
+                    <div class="form-group">
+                        <label>状态：</label>
+                        <nz-select formControlName="status"  style="width: 50%;" [(ngModel)]="selectedValue"  nzAllowClear nzPlaceHolder="请选择状态">
+                            <nz-option nzValue="" nzLabel="全部"></nz-option>
+                            <nz-option nzValue="1" nzLabel="生效"></nz-option>
+                            <nz-option nzValue="0" nzLabel="失效"></nz-option>
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-col nzXs="3" nzSm="3" nzMd="3" nzLg="3" nzXl="2">
+                    <button nz-button class="btn btn-outline-success" type="submit">查&nbsp;&nbsp;询</button>
+                </div>
+                <div nz-col nzXs="3" nzSm="3" nzMd="3" nzLg="3" nzXl="2">
+                    <button nz-button class="btn btn-outline-primary" nzType="primary" (click)="showAddDdit()">新&nbsp;&nbsp;增
+                    </button>
+                </div>
+                <div nz-col nzXs="3" nzSm="3" nzMd="3" nzLg="3" nzXl="2">
+                    <button nz-button class="btn btn-outline-warning" [disabled]="disabledButton" nzType="primary"
+                            [nzLoading]="operating" (click)="disableAll()">
+                        禁&nbsp;&nbsp;用
+                    </button>
+                </div>
+                <div nz-col nzXs="3" nzSm="3" nzMd="3" nzLg="3" nzXl="2">
+                    <button nz-button class="btn btn-outline-warning mr-2 mb-2" nzType="primary"
+                            (click)="clearSearchSet()">
+                        重&nbsp;&nbsp;置
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <nz-table #basicTable
+                          nzBordered
+                          nzShowSizeChanger
+                          nzSize="small"
+                          [nzFrontPagination]="false"
+                          [nzData]="riskDditAll"
+                          [nzLoading]="loading"
+                          [nzTotal]="total"
+                          [(nzPageIndex)]="pageIndex"
+                          [(nzPageSize)]="pageSize"
+                          (nzPageIndexChange)="searchData()"
+                          (nzPageSizeChange)="searchData(true)">
+                    <thead>
+                    <tr>
+                        <th nzShowCheckbox [(nzChecked)]="allChecked" [nzIndeterminate]="indeterminate"
+                            (nzCheckedChange)="checkAll($event)"></th>
+                        <th>字段编号</th>
+                        <th>字段名称</th>
+                        <th>创建人</th>
+                        <th>创建时间</th>
+                        <th>修改人</th>
+                        <th>修改时间</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let data of basicTable.data">
+                        <td nzShowCheckbox [(nzChecked)]="data.checked"
+                            (nzCheckedChange)="refreshStatus($event)"></td>
+                        <td>{{data.dditCode}}</td>
+                        <td>{{data.dditName}}</td>
+                        <td>{{data.createBy}}</td>
+                        <td>{{data.createDate | date:'yyyy-MM-dd'}}</td>
+                        <td>{{data.updateBy}}</td>
+                        <td>{{data.updateDate | date:'yyyy-MM-dd'}}</td>
+                        <td *ngIf=" data.status == 0 ">失效</td>
+                        <td *ngIf=" data.status == 1 ">生效</td>
+                        <td>
+                            <a *ngIf=" data.status == 1 " (click)="details(data.id)">详情&nbsp;&nbsp;</a>
+                            <a *ngIf=" data.status == 1 " (click)="editDdit(data.id)">编辑&nbsp;&nbsp;</a>
+                            <nz-popconfirm  *ngIf=" data.status == 1 "  [nzTitle]="'确定禁用?'" (nzOnConfirm)="disable(data.id)">
+                                <a nz-popconfirm>禁用</a>
+                            </nz-popconfirm>
+                            <nz-popconfirm  *ngIf=" data.status == 0 " [nzTitle]="'确定启用?'" (nzOnConfirm)="enable(data.id)">
+                                <a nz-popconfirm>启用</a>
+                            </nz-popconfirm>
+                        </td>
+                    </tr>
+                    </tbody>
+                </nz-table>
+            </div>
+        </div>
+    </div>
+</section>
+<!-------------------新增字典------------------------>
+<nz-modal [(nzVisible)]="isVisible"
+          [nzFooter]="modalFooter"
+          [nzWidth]="500"
+          [nzTitle]="modalTitle"
+          (nzOnCancel)="handleCancel()">
+
+    <form nz-form [formGroup]="saveDditForm">
+        <nz-form-item>
+            <nz-form-label [nzSpan]="6" nzRequired>数据字典编号</nz-form-label>
+            <nz-form-control [nzSpan]="12">
+                <input nz-input formControlName="dditCode" placeholder="请填写数据字典编号">
+            </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+            <nz-form-label [nzSpan]="6" nzRequired>数据字典名称</nz-form-label>
+            <nz-form-control [nzSpan]="12">
+                <input nz-input formControlName="dditName" placeholder="请填写数据字典名称">
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+    <ng-template #modalTitle>
+        新增数据字典
+    </ng-template>
+    <ng-template #modalFooter>
+        <button nz-button nzType="primary" [disabled]="saveDditForm.invalid" (click)="saveDdit()">保存</button>
+        <button nz-button nzType="primary" (click)="resetSaveDditForm()">重置</button>
+    </ng-template>
+</nz-modal>
+
+
+<!-------------------详情页面------------------------>
+<nz-modal [(nzVisible)]="isVisibleItem"
+          [nzWidth]="1200"
+          [nzFooter]="modalFooterItem"
+          [nzTitle]="modalTitleItem"
+          (nzOnCancel)="handleCancelItem()">
+    <div class="card-header">
+        <form novalidate (ngSubmit)="details(dditId,true)" [formGroup]="searchItemForm">
+            <div nz-row>
+                <div nz-col nzXs="6" nzSm="6" nzMd="6" nzLg="6" nzXl="6">
+                    <div class="form-group">
+                        <label>字典编号：</label>
+                        <input class="form-control col-md-6" nz-input id="dditItemCode" name="dditItemCode" type="text"
+                               formControlName="dditItemCode">
+                    </div>
+                </div>
+                <div nz-col nzXs="6" nzSm="6" nzMd="6" nzLg="6" nzXl="6">
+                    <div class="form-group">
+                        <label>字典名称：</label>
+                        <input class="form-control col-md-6" nz-input id="dditItemName" name="dditItemName" type="text"
+                               formControlName="dditItemName">
+                    </div>
+                </div>
+                <div nz-col nzXs="3" nzSm="3" nzMd="3" nzLg="3" nzXl="2">
+                    <button nz-button class="btn btn-outline-success" type="submit">查&nbsp;&nbsp;询</button>
+                </div>
+                <div nz-col nzXs="3" nzSm="3" nzMd="3" nzLg="3" nzXl="2">
+                    <button nz-button class="btn btn-outline-primary" nzType="primary" (click)="showAddDditItem()">新&nbsp;&nbsp;增
+                    </button>
+                </div>
+                <div nz-col nzXs="3" nzSm="3" nzMd="3" nzLg="3" nzXl="2">
+                    <button nz-button class="btn btn-outline-warning" [disabled]="disabledButtonItem" nzType="primary"
+                            [nzLoading]="operatingItem" (click)="deleteSelectedItem()">
+                        删&nbsp;&nbsp;除
+                    </button>
+                </div>
+                <div nz-col nzXs="3" nzSm="3" nzMd="3" nzLg="3" nzXl="2">
+                    <button nz-button class="btn btn-outline-warning mr-2 mb-2" nzType="primary"
+                            (click)="clearSearchSetItem()">
+                        重&nbsp;&nbsp;置
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <nz-table #basicTableItem
+                          nzShowSizeChanger
+                          nzBordered
+                          nzSize="small"
+                          [nzFrontPagination]="false"
+                          [nzData]="riskDditItemAll"
+                          [nzLoading]="loadingItem"
+                          [nzTotal]="totalItem"
+                          [(nzPageIndex)]="pageIndexItem"
+                          [(nzPageSize)]="pageSizeItem">
+                    <thead>
+                    <tr>
+                        <th nzShowCheckbox [(nzChecked)]="allCheckedItem" [nzIndeterminate]="indeterminateItem"
+                            (nzCheckedChange)="checkAllItem($event)"></th>
+                        <th>字段编号</th>
+                        <th>字段名称</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let data of basicTableItem.data">
+                        <td nzShowCheckbox [(nzChecked)]="data.checked"
+                            (nzCheckedChange)="refreshStatusItem($event)"></td>
+                        <td>{{data.dditItemCode}}</td>
+                        <td>{{data.dditItemName}}</td>
+                        <td>
+                            <a (click)="editDditItem(data.id)">编辑</a>&nbsp;&nbsp;
+                            <nz-popconfirm [nzTitle]="'确定删除?'" (nzOnConfirm)="deleteDditItem(data.id)">
+                                <a nz-popconfirm>删除</a>
+                            </nz-popconfirm>
+                        </td>
+                    </tr>
+                    </tbody>
+                </nz-table>
+            </div>
+        </div>
+    </div>
+
+    <!-------------------新增子表------------------------>
+    <nz-modal [(nzVisible)]="isVisibleItemAdd"
+              [nzFooter]="modalFooterItemAdd"
+              [nzTitle]="modalTitleItemAdd"
+              (nzOnCancel)="handleCancelItemAdd()">
+        <form nz-form [formGroup]="saveDditItemForm">
+            <nz-form-item>
+                <nz-form-label [nzSpan]="7" nzRequired>数据字典编号</nz-form-label>
+                <nz-form-control [nzSpan]="12">
+                    <input nz-input formControlName="dditItemCode" placeholder="请填写数据字典编号">
+                </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+                <nz-form-label [nzSpan]="7" nzRequired>数据字典名称</nz-form-label>
+                <nz-form-control [nzSpan]="12">
+                    <input nz-input formControlName="dditItemName" placeholder="请填写数据字典名称">
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+        <ng-template #modalTitleItemAdd>
+            新增数据字典子表
+        </ng-template>
+        <ng-template #modalFooterItemAdd>
+            <button nz-button nzType="primary" [disabled]="saveDditItemForm.invalid" (click)="saveDditItem()">保存
+            </button>
+            <button nz-button nzType="primary" (click)="resetSaveDditItemForm()">重置</button>
+        </ng-template>
+    </nz-modal>
+    <ng-template #modalTitleItem>
+        数据字典详情
+    </ng-template>
+    <ng-template #modalFooterItem>
+    </ng-template>
+</nz-modal>
+
+
+<!-- END: tables/basic-tables -->

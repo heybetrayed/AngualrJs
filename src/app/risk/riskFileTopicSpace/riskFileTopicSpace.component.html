@@ -1,0 +1,39 @@
+<div>
+    <div nz-row [nzGutter]="8">
+        <div nz-col [nzSpan]="24">
+            <nz-card>
+                <nz-card-tab>
+                    <nz-tabset nzSize="small" [(nzSelectedIndex)]="index1" >
+                        <nz-tab nzTitle="公文发布">
+                            <app-share-topic-space [fakeDataUrl]="tabUrlObj[0].url" [tabIndex]="0" [nameWidth]="400"></app-share-topic-space>
+                        </nz-tab>
+                    </nz-tabset>
+                </nz-card-tab>
+            </nz-card>
+        </div>
+        <div nz-col [nzSpan]="12" style="margin-top: 10px;">
+            <nz-card>
+                <nz-tabset nzSize="small" [(nzSelectedIndex)]="index2" [nzTabBarExtraContent]="gzzdTemplate">
+                    <nz-tab nzTitle="规章制度">
+                        <app-share-topic-space [fakeDataUrl]="tabUrlObj[1].url" [tabIndex]="1" [nameWidth]="200"></app-share-topic-space>
+                    </nz-tab>
+                </nz-tabset>
+                <ng-template #gzzdTemplate>
+                    <a [routerLink]="['/risk/riskRegTask']" class="anticon-class"><span class="ant-badge">更多</span></a>
+                </ng-template>
+            </nz-card>
+        </div>
+        <div nz-col [nzSpan]="12" style="margin-top: 10px;">
+            <nz-card>
+                <nz-tabset nzSize="small" [(nzSelectedIndex)]="index3" [nzTabBarExtraContent]="dwxwTemplate">
+                    <nz-tab nzTitle="单位新闻">
+                        <app-share-topic-space [fakeDataUrl]="tabUrlObj[2].url" [tabIndex]="2" [nameWidth]="200"></app-share-topic-space>
+                    </nz-tab>
+                </nz-tabset>
+                <ng-template #dwxwTemplate>
+                    <a [routerLink]="['/risk/news']" class="anticon-class"><span class="ant-badge">更多</span></a>
+                </ng-template>
+            </nz-card>
+        </div>
+    </div>
+</div>

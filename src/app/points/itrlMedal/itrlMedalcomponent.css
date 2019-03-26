@@ -1,0 +1,18 @@
+.col-sm-12 col-md-7 {
+    vertical-align: center;
+}
+.error {
+    border: 1px dashed red;
+    color: red;
+    padding: 4px;
+}
+
+.btn-default {
+    border: 1px solid;
+    background-color: #3845e2;
+    color: #fff;
+}
+
+.btn-default:disabled {
+    background-color: #aaa;
+}

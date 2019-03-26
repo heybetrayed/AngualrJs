@@ -1,0 +1,34 @@
+{
+  "name": "swagger-ui",
+  "main": "dist/index.html",
+  "authors": [
+    "Mohsen Azimi <me@azimi.me>"
+  ],
+  "description": "Swagger UI",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "Swagger",
+    "API"
+  ],
+  "license": [
+    "Apache-2.0",
+    "Copyright 2016 SmartBear Software",
+    "./LICENSE"
+  ],
+  "homepage": "http://swagger.io",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "_source": "nexus+http://22.144.101.75:8081/repository/bower/swagger-ui",
+  "_target": "~2.2.10",
+  "_release": "v2.2.10",
+  "version": "v2.2.10",
+  "_originalSource": "swagger-ui"
+}

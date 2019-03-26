@@ -1,0 +1,74 @@
+<!-- START: tables/datatables -->
+<section class="card">
+    <div class="card-header">
+        <form novalidate (ngSubmit)="reduceItrl()" [formGroup]="searchForm">
+            <div class="row">
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>调整原因</label>
+                        <input class="form-control" type="text" formControlName="thinkCause">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>积分来源</label>
+                        <input class="form-control" type="text" formControlName="itrlSource">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>客户编号</label>
+                        <input class="form-control" type="text" formControlName="memNo">
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>获取积分编号</label>
+                        <select class="form-control" disabled>
+                            <option value="HQ-015" selected="selected" >HQ-015(积分减少)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row" *ngFor="let i of itrlTypeList;let idx=index;">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>积分类别</label>
+                            <select class="form-control select2" [(ngModel)]="i.itrlType" [ngModelOptions]="{standalone: true}" (change)="checkItrlTy(idx)">
+                                <option *ngFor="let j of itrlTy;let idx=index;" [value]="j.id">{{j.typeName}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>积分值</label>
+                            <input class="form-control" type="text" [(ngModel)]="i.itrlNumber" [ngModelOptions]="{standalone: true}" >
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <button type="button" *ngIf="idx==0 " class="btn btn-primary width-150" (click)="addInput()">
+                            +
+                        </button>
+
+                        <button type="button" *ngIf="idx >0 " class="btn btn-primary width-150" (click)="addRemove(i)">
+                            -
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <button class="btn btn-outline-success mr-2 mb-2" type="submit" style="margin-top: 20%;" [disabled]="searchForm.invalid">测试</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="mb-5">
+                    {{result}}
+                    <!--<table datatable [dtOptions]="dtOptions" class="table table-hover nowrap" width="100%"></table>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- END: tables/datatables -->

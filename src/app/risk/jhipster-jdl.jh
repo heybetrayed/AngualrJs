@@ -1,0 +1,392 @@
+
+  
+  entity AesTemp{
+      aTName 				String,
+      aTDescript			String,
+      createDate 			Instant,
+      createBy		 		String,
+      updateDate 			Instant,
+      updateBy 				String,
+      status 				Integer
+  }
+
+  entity  AesModule{
+      aMName 				String,
+      aMDescript			String,
+      createDate 			Instant,
+      createBy 				String,
+      updateDate 			Instant,
+      updateBy 				String,
+      status 				Integer
+  }
+
+
+  entity AesFactor{
+      aFTitle 				String,
+      aFDeptId 				String,
+      aFSource				String,
+      aFDescript  			String,
+      updateDate 			Instant,
+      updateBy 				String,
+      createDate 			Instant,
+      createBy 				String,
+      status 				Integer
+  }
+
+  entity 	AesType{
+      aTypeName 			String,
+      updateDate 			Instant,
+      updateBy 				String,
+      createDate 			Instant,
+      createBy 				String,
+      status 				Integer
+  }
+  entity TempFacTypeRela {
+      templateId  			String,
+      factorId  			String,
+      typeId   				String
+  }
+
+
+  //--------------------------------------------------------------------------------------------
+  entity 	AesGatData{
+      aGDRating   			String,
+      aGDScore    	    	Double,
+      updateDate 			Instant,
+      updateBy 				String,
+      createDate 			Instant,
+      createBy 				String,
+      status 				Integer
+  }
+
+  entity 	AesFacData{
+      aFDResult    		String ,
+      aFDCaption  		String ,
+      aFDSupportFile  	String ,
+      aFDReporter		String ,
+      aFDScore    		Double ,
+      aFDWeights  		Double ,
+      updateDate 		Instant,
+      updateBy 			String,
+      createDate 		Instant,
+      createBy 			String,
+      status 			Integer
+  }
+
+  entity 	AesTask{
+      aTaskTitle			String,
+      aTaskStartDate		Instant,
+      aTaskEndDate			Instant,
+      aTaskProcessId 		String,
+      updateDate 			Instant,
+      updateBy 				String,
+      createDate 			Instant,
+      createBy 				String,
+      status 				Integer,
+      templateId            String
+  }
+
+  //--------------------------------------------------------------------------------------------
+  entity 	RegTask{
+      rTStartDept		String,
+      rTStartName		String,
+      rTLevel  			Integer,
+      rTStartTime		Instant,
+      rTEndTime			Instant,
+      processId			String,
+      updateDate 		Instant,
+      updateBy 			String,
+      createDate 		Instant,
+      createBy 			String,
+      status 			Integer
+  }
+
+  entity 	Documents{
+      docName  				String,
+      docSize				String,
+      docPath				String,
+      docUpLoadDate  		Instant,
+      docPostfix 			String
+      docType				String,
+      docUploadBy  			String,
+      docDownLoadCount 		Integer ,
+      docViewCount 			Integer,
+      docEditCount			Integer,
+      status 				Integer
+  }
+
+  /*  */
+  entity 	DocOperation{
+      docOperator   		String ,
+      docOperationDate		Instant,
+      docOperationType		Integer
+  }
+
+
+  /** 数据字典表 */
+  entity Ddit {
+      //字段编号
+      dditCode  	String,
+      //字段名称
+      dditName  	String,
+      //创建时间
+      createDate  	Instant,
+      //创建人
+      createBy  	String,
+      //更新人
+      updateBy  	String,
+      //更新时间
+      updateDate 	Instant,
+      //状态
+      status 		Integer
+  }
+
+  /**数据字典子表*/
+  entity DditItem {
+      //字段名称
+      dditItemName String,
+      //字段编号
+      dditItemCode String
+
+  }
+
+  //模板表
+  entity TableTemp {
+     //模板表名称
+     tTName   	String,
+      //创建时间
+     createDate  Instant,
+     //创建人
+     createBy 	String,
+     //更新人
+     updateBy  String,
+      //更新时间
+     updateDate Instant,
+     //状态
+     status 	Integer,
+     //数字化监控类型
+     monitorTypeId String,
+     //说明
+     comment String,
+     //模板内容
+     templateJson String
+  }
+
+   entity MonitorType{
+   	//监控类型名称
+   	mTypeName String,
+         //创建时间
+     	createDate  Instant,
+     	//创建人
+    	createBy 	String,
+    	 //更新人
+    	 updateBy  String,
+     	 //更新时间
+         updateDate Instant,
+    	 //状态
+    	 status 	Integer
+
+   }
+
+   //监控信息表
+  	entity MonitorInfo{
+    	 //创建时间
+     	createDate  Instant,
+     	//创建人
+    	 createBy 	String,
+    	 //更新人
+    	 updateBy  String,
+     	 //更新时间
+       	updateDate Instant,
+    	 //状态
+    	 status 	Integer,
+         //版本号
+         verison  String,
+         //监控信息名称(资产，负债和所有者权益；资产项目结构表)
+         name String,
+         //类型(季度总行要求指标，资本情况分析)
+         type String
+    }
+
+      //监控数据表
+    entity MonitorData{
+    	monitorInfoId String,
+        column1 String,
+        column2 String,
+        column3 String,
+        column4 String,
+        column5 String,
+        column6 String,
+        column7 String,
+        column8 String,
+        column9 String,
+        column10 String,
+        column11 String,
+        column12 String,
+        column13 String,
+        column14 String,
+        column15 String,
+        column16 String,
+        column17 String,
+        column18 String,
+        column19 String,
+        column20 String,
+        column21 String,
+        column22 String,
+        column23 String,
+        column24 String,
+        column25 String,
+        column26 String,
+        column27 String,
+        column28 String,
+        column29 String,
+        column30 String,
+        column31 String,
+        column32 String,
+        column33 String,
+        column34 String,
+        column35 String,
+        column36 String,
+        column37 String,
+        column38 String,
+        column39 String,
+        column40 String,
+        column41 String,
+        column42 String,
+        column43 String,
+        column44 String,
+        column45 String,
+        column46 String,
+        column47 String,
+        column48 String,
+        column49 String,
+        column50 String
+    }
+
+	//监控记录表
+	entity MonitorRecord{
+    	//内容名称
+    	name String,
+        //部门
+        department String,
+        //说明
+        comment String,
+        //时间
+        time Instant,
+        //任务id
+        taskId String
+    }
+
+    //报告分析表
+    entity ReportAnalyze{
+    	   //创建时间
+     	createDate  Instant,
+     	//创建人
+    	 createBy 	String,
+    	 //更新人
+    	 updateBy  String,
+     	 //更新时间
+       updateDate Instant,
+    	 //状态
+    	 status 	Integer,
+         //部门
+         department String,
+         //类型(外部环境分析，总体风险状况...)
+         type String,
+         //名称(宏观经济形式，行业环境分析...)
+         name String
+    }
+
+    //报告目录
+    entity ReportCatalog{
+    	 //创建时间
+     	createDate  Instant,
+     	//创建人
+    	 createBy 	String,
+    	 //更新人
+    	 updateBy  String,
+     	 //更新时间
+       updateDate Instant,
+    	 //状态
+    	 status 	Integer,
+         //上级id
+         pid String,
+         //排序
+         sort String,
+         //目录名称
+         name String,
+         //部门
+         department String
+    }
+
+    //报告任务表
+    entity ReportTask{
+    	//任务名称
+    	taskName String,
+        //任务开启时间
+        startTime Instant,
+        //任务结束时间
+        endTime Instant,
+         //创建时间
+     	createDate  Instant,
+     	//创建人
+    	 createBy 	String,
+    	 //更新人
+    	 updateBy  String,
+     	 //更新时间
+      	 updateDate Instant,
+    	 //状态
+    	 status 	Integer,
+         //任务描述
+         content String
+
+    }
+
+    entity ReportNotification{
+    	status Integer,
+        email String,
+        taskId String
+    }
+
+    entity ReportRecord{
+    	name String,
+        department String,
+        comment String,
+        time Instant,
+        taskId String
+    }
+
+  relationship OneToOne {
+    DditItem {ddit} to Ddit,
+    AesGatData{assessModule} to AesModule,
+    AesGatData{assessType}  to AesType,
+    AesFacData{assessModule}  to AesModule,
+    AesFacData{assessType} to AesType,
+    AesFacData{assessFactor} to AesFactor
+  }
+
+  relationship OneToMany {
+    RegTask{documents} to Documents,
+    AesTask{aesGatData} to AesGatData,
+    AesTask{aesFactorData} to AesFacData,
+    Documents{docOperation} to DocOperation,
+    AesTemp{assessModule} to AesModule,
+    AesModule{assessType} to AesType
+  }
+
+  paginate AesTemp, AesModule, AesFactor, AesType with pagination
+  paginate TempFacTypeRela with pagination
+  paginate AesGatData, AesFacData, AesTask with pagination
+  paginate RegTask, Documents, DocOperation with pagination
+  paginate DditItem, Ddit with pagination
+  
+  
+  paginate TableTemp , MonitorType , MonitorInfo with pagination
+  paginate MonitorData, MonitorRecord, ReportAnalyze with pagination
+  paginate ReportCatalog, ReportTask, ReportNotification with pagination
+    paginate ReportRecord with pagination
+
+  //配置dto
+  dto * with mapstruct
+  //配置service
+  service * with serviceClass

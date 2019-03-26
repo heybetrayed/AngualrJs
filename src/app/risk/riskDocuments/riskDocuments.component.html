@@ -1,0 +1,75 @@
+<!-- START: tables/basic-tables -->
+<section class="card">
+    <div class="card-header">
+        <form novalidate (ngSubmit)="searchData(true)" [formGroup]="searchForm">
+            <div nz-row>
+                <div nz-col nzXs="6" nzSm="6" nzMd="6" nzLg="6" nzXl="6">
+                    <div class="form-group">
+                        <label>文件名称：</label>
+                        <input class="form-control col-md-6"  nz-input id="docName" name="docName" type="text"
+                               formControlName="docName">
+                    </div>
+                </div>
+                <div nz-col nzXs="3" nzSm="3" nzMd="3" nzLg="3" nzXl="2">
+                    <button nz-button class="btn btn-outline-success" type="submit">查&nbsp;&nbsp;询</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <nz-table #basicTable [nzData]="regTaskAll" nzSize="small" nzBordered>
+                    <thead>
+                    <tr>
+                        <th>文件名称</th>
+                        <th>文件大小</th>
+                        <th>文件上传日期</th>
+                        <!--<th>文件后缀</th>-->
+                        <th>文件类型</th>
+                        <th>文件上传人</th>
+                        <th>文件下载次数</th>
+                        <th>文件查看次数</th>
+                        <th>文件编辑次数</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let data of basicTable.data">
+                        <td>{{data.docName}}</td>
+                        <td>{{data.docSize}}</td>
+                        <td>{{data.docUpLoadDate | date:'yyyy-MM-dd'}}</td>
+                        <td>{{data.docPostfix}}</td>
+                        <!--<td>{{data.docType}}</td>-->
+                        <td>{{data.docUploadBy}}</td>
+                        <td>{{data.docDownLoadCount}}</td>
+                        <td>{{data.docViewCount}}</td>
+                        <td>{{data.docEditCount}}</td>
+                        <td>
+                            <a (click)="viewFiles(data)">查看</a>&nbsp;&nbsp;
+                            <a (click)="downloadFile(data)">下载</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </nz-table>
+            </div>
+        </div>
+    </div>
+
+    <!--文件查看-->
+    <ng-template #tplTitle>
+        <span>Title Template</span>
+    </ng-template>
+    <ng-template #onlyofficeContent let-c="close">
+        <div class="modal-body" style="padding: 0;">
+            <app-weboffice
+                    [onlyofficeSrc]="onlyofficeSrc"
+                    [onlyofficeKey]="onlyofficeKey"
+                    [onlyofficeType]="onlyofficeType"
+                    [onlyofficeName]="onlyofficeName"
+            ></app-weboffice>
+        </div>
+    </ng-template>
+    <!--<ng-template #tplFooter> </ng-template>-->
+</section>
+<!-- END: tables/basic-tables -->

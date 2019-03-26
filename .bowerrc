@@ -1,0 +1,11 @@
+{
+	"directory": "src/assets/vendors/by_bower",
+  "registry" : {
+    "search" : [ "http://22.144.101.75:8081/repository/bower/" ]
+  },
+  "resolvers" : [ "bower-nexus3-resolver" ],
+  "nexus" : {
+    "username" : "admin",
+    "password" : "admin"
+  }
+}

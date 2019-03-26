@@ -1,0 +1,157 @@
+<!-- START: tables/datatables -->
+<section class="card">
+    <div class="card-header">
+        <form novalidate (ngSubmit)="search()" [formGroup]="searchForm">
+            <div class="row">
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>客户编号</label>
+                        <input class="form-control" id="memNo" name="memNo" type="text"
+                               formControlName="memNo">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>客户手机号</label>
+                        <input class="form-control" id="memPhone" name="memPhone" type="text"
+                               formControlName="memPhone">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <button class="btn btn-outline-success mr-2 mb-2" type="submit" style="margin-top: 12%;">查询</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <form novalidate (ngSubmit)="saveDdit()" [formGroup]="saveForm">
+        <input type="hidden" name="id" id="id" formControlName="id">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="mb-5">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <h5 class="text-black"><strong>调整前</strong></h5>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <h5 class="text-black"><strong>调整后</strong></h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngFor="let i of transferItemList">
+                            <input type="hidden" [(ngModel)]="i.id" [ngModelOptions]="{standalone: true}">
+                            <div class="col-md-3">
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label">{{i.typeName}}:</label>
+                                    <div class="col-md-9">
+                                        <input class="form-control" type="text" [(ngModel)]="i.oldScore" [ngModelOptions]="{standalone: true}"
+                                               readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <select class="form-control select2"
+                                            [(ngModel)]="i.oldScoreStaus" [ngModelOptions]="{standalone: true}"
+                                            disabled>
+                                        <option value="0">禁用</option>
+                                        <option value="1">启用</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <input class="form-control" [(ngModel)]="i.newScore"
+                                           [ngModelOptions]="{standalone: true}"
+                                           type="text">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <select class="form-control select2"
+                                            [(ngModel)]="i.newScoreStaus" [ngModelOptions]="{standalone: true}" >
+                                        <option value="0">禁用</option>
+                                        <option value="1">启用</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label">积分主账号状态:</label>
+                                    <div class="col-md-9">
+                                        <select name="memStatus" class="form-control select2"
+                                                formControlName="oldItrlMemStatus" disabled>
+                                            <option value="0">停用</option>
+                                            <option value="1">正常</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <select name="later_memStatus" class="form-control select2"
+                                            formControlName="newItrlMemStatus">
+                                        <option value="0">停用</option>
+                                        <option value="1">正常</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label">调整编号:</label>
+                                    <div class="col-md-9">
+                                        <input class="form-control" name="memNo" type="text"
+                                               formControlName="memNo" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label">调整类型:</label>
+                                    <div class="col-md-9">
+                                        <select name="transferType" class="form-control select2" formControlName="transferType">
+                                            <option value="0">综合调整</option>
+                                            <option value="1">加分</option>
+                                            <option value="2">减分</option>
+                                            <option value="3">积分状态调整</option>
+                                            <option value="4">账户状态调整</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label">调整说明:</label>
+                            <div class="col-md-9">
+                            <textarea class="form-control" rows="4" formControlName="transferReason"
+                                      style="margin-top: 0px; margin-bottom: 0px; height: 87px;"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="form-group row">
+                                <div class="col-md-9 offset-md-11">
+                                    <button type="submit" class="btn btn-primary width-150"
+                                            [disabled]="saveForm.invalid">提交
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <jqxBarGauge
+            [width]="600" [height]="600" [max]="150"
+            [colorScheme]="'scheme02'" [values]="values">
+    </jqxBarGauge>
+</section>
+<!-- END: tables/datatables -->

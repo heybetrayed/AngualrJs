@@ -1,0 +1,124 @@
+<!-- START: tables/datatables -->
+<section class="card">
+    <div class="card-header">
+        <form novalidate (ngSubmit)="searchData()" [formGroup]="searchForm">
+            <div class="row">
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label for="name">模板名称：</label>
+                        <input class="form-control" id="name" name="name" type="text" />
+                    </div>
+                </div>
+                <div class="col-lg-4" style="margin-top: 2%;">
+                    <button class="btn btn-outline-success mr-2 mb-2" type="submit">查询</button>
+                    <button class="btn btn-outline-primary mr-2 mb-2" id="addData" type="button" (click)="showAddModal()">新增
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="mb-5">
+                    <nz-table
+                        #ajaxTable
+                        nzShowSizeChanger
+                        nzBordered
+                        nzSize="small"
+                        [nzFrontPagination]="false"
+                        [nzData]="dataSet"
+                        [nzLoading]="loading"
+                        [nzTotal]="total"
+                        [(nzPageIndex)]="pageIndex"
+                        [(nzPageSize)]="pageSize"
+                        (nzPageIndexChange)="searchData()"
+                        (nzPageSizeChange)="searchData(true)">
+                        <thead (nzSortChange)="sort($event)" nzSingleSort>
+                        <tr>
+                            <th nzShowCheckbox [(nzChecked)]="allChecked" [nzIndeterminate]="indeterminate"
+                                (nzCheckedChange)="checkAll($event)"></th>
+                            <th nzShowSort nzSortKey="id">id</th>
+                            <th nzShowSort nzSortKey="login">name</th>
+                            <th nzShowSort nzSortKey="firstName">key</th>
+                            <th><span>操作</span></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let data of ajaxTable.data">
+                            <td nzShowCheckbox [(nzChecked)]="data.checked"
+                                (nzCheckedChange)="refreshStatus($event)"></td>
+                            <td>{{data.id}}</td>
+                            <td>{{data.name}}</td>
+                            <td>{{data.key}}</td>
+                            <td>
+                                <nz-popconfirm [nzTitle]="'确定修改吗?'" (nzOnConfirm)="editor(data.id)">
+                                    <a nz-popconfirm>编辑</a>
+                                </nz-popconfirm>
+                                <!--<button nz-popconfirm nzTitle="Are you sure delete this use?" (nzOnConfirm)="confirm(data)" (nzOnCancel)="cancel()" nzPlacement="topLeft" nz-button>删除</button>-->
+                            </td>
+                        </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--新增模板页面-->
+    <nz-modal [(nzVisible)]="isVisible" nzTitle="模板创建" [nzWidth]="800" [nzFooter]="addFooter"
+              (nzOnCancel)="handleCancel()">
+        <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm($event,validateForm.value)">
+            <input name="id" type="hidden" >
+            <nz-form-item>
+                <nz-form-label [nzSpan]="3" nzRequired>模型名称</nz-form-label>
+                <nz-form-control [nzSpan]="16" nzHasFeedback>
+                    <input nz-input formControlName="name" placeholder="请输入模型名称">
+                    <nz-form-explain
+                            *ngIf="validateForm.get('name').dirty && validateForm.get('name').errors || validateForm.get('name').pending ">
+                        <ng-container *ngIf="validateForm.get('name').hasError('required')">
+                            请输入模型名称！
+                        </ng-container>
+                    </nz-form-explain>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSpan]="3" nzRequired>模型key</nz-form-label>
+                <nz-form-control [nzSpan]="16" nzHasFeedback>
+                    <input nz-input formControlName="key" placeholder="请输入模型key">
+                    <nz-form-explain
+                            *ngIf="validateForm.get('key').dirty && validateForm.get('key').errors || validateForm.get('key').pending ">
+                        <ng-container *ngIf="validateForm.get('key').hasError('required')">
+                            请输入模型key！
+                        </ng-container>
+                    </nz-form-explain>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSpan]="3" >描述</nz-form-label>
+                <nz-form-control [nzSpan]="16" nzHasFeedback>
+                    <input nz-input formControlName="description" placeholder="请输入描述">
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-control [nzOffset]="7" [nzSpan]="12">
+                    <button nz-button nzType="primary" (click)="handleOk()" [disabled]="!validateForm.valid">确定
+                    </button>
+                </nz-form-control>
+            </nz-form-item>
+
+            <ng-template #addFooter>
+
+            </ng-template>
+        </form>
+    </nz-modal>
+
+    <!--流程绘制模版-->
+    <ng-template #activitiContent let-c="close">
+        <app-modeler [acurl]="iframe"></app-modeler>
+    </ng-template>
+
+</section>
+<!-- END: tables/datatables -->

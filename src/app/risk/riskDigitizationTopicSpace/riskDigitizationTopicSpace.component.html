@@ -1,0 +1,51 @@
+<div>
+    <div nz-row [nzGutter]="8">
+        <div nz-col [nzSpan]="24">
+            <nz-card  [nzExtra]="extraTemplate">
+                <nz-card-tab>
+                    <nz-tabset nzSize="small" [(nzSelectedIndex)]="index1">
+                        <nz-tab nzTitle="待办工作">
+                            <app-share-topic-space [fakeDataUrl]="tabUrlObj[0].url" [tabIndex]="0" [nameWidth]="400"></app-share-topic-space>
+                        </nz-tab>
+                        <nz-tab nzTitle="暂存待办">
+                            <app-share-topic-space [fakeDataUrl]="tabUrlObj[1].url" [tabIndex]="1"  [nameWidth]="400"></app-share-topic-space>
+                        </nz-tab>
+                        <nz-tab nzTitle="超期事项">
+                            <app-share-topic-space [fakeDataUrl]="tabUrlObj[2].url" [tabIndex]="2" [nameWidth]="400"></app-share-topic-space>
+                        </nz-tab>
+                    </nz-tabset>
+                </nz-card-tab>
+                <!--content{{ index2 }}-->
+            </nz-card>
+
+            <ng-template #extraTemplate>
+                <a>更多</a>
+            </ng-template>
+
+        </div>
+        <div nz-col [nzSpan]="12">
+            <nz-card>
+                <nz-tabset nzSize="small" [(nzSelectedIndex)]="index2">
+                    <nz-tab nzTitle="跟踪事项">
+                        <app-share-topic-space [fakeDataUrl]="tabUrlObj[3].url" [tabIndex]="3" [nameWidth]="200"></app-share-topic-space>
+                    </nz-tab>
+                    <nz-tab nzTitle="督办事项">
+                        <app-share-topic-space [fakeDataUrl]="tabUrlObj[4].url" [tabIndex]="4" [nameWidth]="200"></app-share-topic-space>
+                    </nz-tab>
+                </nz-tabset>
+            </nz-card>
+        </div>
+        <div nz-col [nzSpan]="12">
+            <nz-card>
+                <nz-tabset nzSize="small" [(nzSelectedIndex)]="index3">
+                    <nz-tab nzTitle="已办事项">
+                        <app-share-topic-space [fakeDataUrl]="tabUrlObj[5].url" [tabIndex]="5" [nameWidth]="200"></app-share-topic-space>
+                    </nz-tab>
+                    <nz-tab nzTitle="已发事项">
+                        <app-share-topic-space [fakeDataUrl]="tabUrlObj[6].url" [tabIndex]="6" [nameWidth]="200"></app-share-topic-space>
+                    </nz-tab>
+                </nz-tabset>
+            </nz-card>
+        </div>
+    </div>
+</div>

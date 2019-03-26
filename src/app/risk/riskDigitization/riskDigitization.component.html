@@ -1,0 +1,230 @@
+<section class="card" xmlns="http://www.w3.org/1999/html">
+    <div class="card-header">
+        <form novalidate (ngSubmit)="searchData(true)" [formGroup]="searchForm">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label class="col-md-4">项目名称</label>
+                        <input class="form-control col-md-6" nz-input name="name" type="text"
+                               formControlName="name"/>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <button nz-button class="btn btn-outline-success mr-2 mb-2" type="submit">查询</button>
+                    <button nz-button class="btn btn-outline-info mr-2 mb-2" type="button" (click)="create()">新建
+                    </button>
+                    <!--<button nz-button class="btn btn-outline-info mr-2 mb-2" type="button" (click)="showBpmnModal(bpmnContent)">设计流程</button>-->
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <input class="form-control col-md-6" nz-input name="type" type="hidden" formControlName="type"/>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <nz-card style="width: 100%;">
+                <nz-card-tab>
+                    <nz-tabset nzSize="small" nzSelectedIndex="0">
+                        <nz-tab *ngFor="let DigitizationType of DigitizationTypes"
+                                [nzTitle]="DigitizationType.mTypeName"
+                                (nzClick)="selectTab(['click',DigitizationType.id,DigitizationType.mTypeName])"></nz-tab>
+                    </nz-tabset>
+                </nz-card-tab>
+                <nz-table #basicTable [nzData]="riskDigitizations"
+                          nzBordered
+                          nzShowSizeChanger
+                          nzSize="small"
+                          [nzFrontPagination]="false"
+                          [nzLoading]="loading"
+                          [nzTotal]="total"
+                          [(nzPageIndex)]="pageIndex"
+                          [(nzPageSize)]="pageSize"
+                          (nzPageIndexChange)="searchData()"
+                          (nzPageSizeChange)="searchData(true)">
+                    <thead>
+                    <tr>
+                        <th nzShowCheckbox [(nzChecked)]="allChecked" [nzIndeterminate]="indeterminate"
+                            (nzCheckedChange)="checkAll($event)"></th>
+                        <th>具体项目ID</th>
+                        <th>项目名称</th>
+                        <th>状态</th>
+                        <th>创建时间</th>
+                        <th>创建人</th>
+                        <th>更新时间</th>
+                        <th>更新人</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let data of basicTable.data">
+                        <td nzShowCheckbox [(nzChecked)]="data.checked"
+                            (nzCheckedChange)="refreshStatus($event)"></td>
+                        <td>{{data.id}}</td>
+                        <td>{{data.name}}</td>
+                        <td>{{flowStatus[data.flowable[0]['status']]}}</td>
+                        <td>{{data.flowable[0]['createDate'] | date:'yyyy-MM-dd'}}</td>
+                        <td>{{data.flowable[0]['createBy']}}</td>
+                        <td>{{data.flowable[0]['updateDate'] | date:'yyyy-MM-dd'}}</td>
+                        <td>{{data.flowable[0]['updateBy']}}</td>
+                        <td>
+                            <a (click)="lookTaskDigitization(data)" *ngIf="data.flowable[0]['status'] != 0">查看</a>
+                            <a (click)="editTaskDigitization(data)" *ngIf="data.flowable[0]['status'] == 0">编辑</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </nz-table>
+            </nz-card>
+
+        </div>
+    </div>
+
+</section>
+
+<!-- 新建 -->
+<nz-modal [(nzVisible)]="isRiskDigitizationVisible" nzTitle="查看信息" [nzWidth]="800" [nzFooter]="addFooter"
+          (nzOnCancel)="handleRiskDigitizationCancel()">
+
+    <nz-collapse>
+        <nz-collapse-panel *ngFor="let table of tables" [nzHeader]="table.tTName" [nzActive]="false">
+            <table border="1" cellspacing="0" cellpadding="0">
+                <tbody>
+                <tr *ngFor="let row of table.data">
+                    <td *ngFor="let cell of row" width="100px" height="20px" align="center">
+                        <input nz-input *ngIf="cell.canModify" [(ngModel)]="cell.cellValue" value=""/>
+                        <span *ngIf="!cell.canModify">{{cell.cellValue}}</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </nz-collapse-panel>
+    </nz-collapse>
+
+    <ng-template #addFooter>
+        <button nz-button nzType="primary" (click)="saveTables('0')">保存</button>
+        <button nz-button nzType="primary" (click)="saveTables('1')">发送</button>
+    </ng-template>
+</nz-modal>
+
+<!-- 查看 -->
+<nz-modal [(nzVisible)]="showRiskDigitizationVisible" nzTitle="处理信息" [nzWidth]="800" [nzFooter]="addShowFooter"
+          (nzOnCancel)="handleShowDigitizationCancel()">
+
+    <nz-collapse>
+        <nz-collapse-panel *ngFor="let table of tables" [nzHeader]="table.tTName" [nzActive]="false">
+            <table border="1" cellspacing="0" cellpadding="0">
+                <tbody>
+                <tr *ngFor="let row of table.data">
+                    <td *ngFor="let cell of row" width="100px" height="20px" align="center">
+                        {{cell.cellValue}}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </nz-collapse-panel>
+    </nz-collapse>
+
+    <ng-template #addShowFooter>
+        <!-- <button nz-button nzType="primary" (click)="handleCancel()">同意</button>
+         <button nz-button nzType="primary" (click)="handleOk()">驳回</button>-->
+        <button nz-button nzType="primary" (click)="showWorkflowList()">审批历史</button>
+        <button nz-button nzType="primary" (click)="showWorkflowImg()">流程图</button>
+    </ng-template>
+</nz-modal>
+
+
+<!-- 新建-->
+<nz-modal [(nzVisible)]="isRDVisible" [nzTitle]="addtitle" (nzOnCancel)="handleCancel()" [nzOkLoading]="isRDOkLoading"
+          [nzFooter]="modalFooter">
+    <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+        <input type="hidden" name="type" formControlName="type">
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5" nzFor="taskId" nzRequired>任务</nz-form-label>
+            <nz-form-control [nzSpan]="12">
+                <nz-select id="taskId" formControlName="taskId" nzPlaceHolder="请选择任务">
+                    <nz-option *ngFor="let task of taskAll" [nzValue]="task.id"
+                               [nzLabel]="task.taskName"></nz-option>
+                </nz-select>
+                <nz-form-explain
+                        *ngIf="validateForm.get('taskId').dirty && validateForm.get('taskId').errors">请选择任务!
+                </nz-form-explain>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5" nzRequired nzFor="name">名称</nz-form-label>
+            <nz-form-control [nzSpan]="12">
+                <input id="name" type="text" nz-input formControlName="name" nzPlaceHolder="请输入名称">
+                <nz-form-explain *ngIf="validateForm.get('name').dirty && validateForm.get('name').errors">
+                    请输入名称!
+                </nz-form-explain>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5" nzFor="modelId" nzRequired>流程</nz-form-label>
+            <nz-form-control [nzSpan]="10">
+                <nz-select id="modelId" formControlName="modelId" nzPlaceHolder="请选择流程" [(ngModel)]="selectFlow"
+                           nzAllowClear>
+                    <nz-option *ngFor="let flow of flowAll" [nzValue]="flow.id" [nzLabel]="flow.name"></nz-option>
+                </nz-select>
+                <nz-form-explain *ngIf="validateForm.get('modelId').dirty && validateForm.get('modelId').errors">
+                    请选择流程!
+                </nz-form-explain>
+            </nz-form-control>
+            <nz-form-control [nzSpan]="2">
+                <a style="background-color: #FFFFFF;margin-left: 5px;" nzType="primary" (click)="showBpmnModal()">
+                    <i nz-icon type="deployment-unit" theme="outline"></i>
+                </a>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5" nzFor="gender" nzRequired>说明</nz-form-label>
+            <nz-form-control [nzSpan]="12">
+                            <textarea formControlName="comment" nz-input rows="2"
+                                      placeholder="请填写说明"></textarea>
+                <nz-form-explain
+                        *ngIf="validateForm.get('comment').dirty&&validateForm.get('comment').hasError('required')">
+                    请填写说明!
+                </nz-form-explain>
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+    <ng-template #modalFooter>
+        <button nz-button nzType="primary" [disabled]="!validateForm.valid" (click)="submitForm()">保存</button>
+    </ng-template>
+
+</nz-modal>
+
+<!--流程绘制模版-->
+<ng-template #activitiContent let-c="close">
+    <app-modeler [acurl]="iframe"></app-modeler>
+</ng-template>
+
+<!--查看流程图-->
+<ng-template #tplworkflowImg>
+    <img src="/activitios/api/workflow/histry/trace/{{processInstId}}" style="width: 550px;"/>
+</ng-template>
+
+<!--查看审批记录-->
+<ng-template #tplworkflowList>
+    <nz-table #historyTaskTable [nzData]="dataSet" nzFooter="" nzTitle="" nzSize="small" nzBordered="bordered"
+              nzShowPagination="false">
+        <thead>
+        <tr>
+            <th>任务名称</th>
+            <th>处理时间</th>
+            <th>执行人</th>
+            <th>备注</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of historyTaskTable.data">
+            <td>{{data.name}}</td>
+            <td>{{data.endTime | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+            <td>{{data.assignee}}</td>
+            <td>{{data.reason == 'completed' ? '通过' : data.reason}}</td>
+        </tr>
+        </tbody>
+    </nz-table>
+</ng-template>

@@ -1,0 +1,94 @@
+<section class="card cat__core__card-with-sidebar cat__core__card-with-sidebar--large" style="height: 700px">
+    <div class="cat__core__card-sidebar">
+
+        <div class="cat__apps__messaging__header">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="cat__top-bar__logo">
+                        <img src="assets/modules/dummy-assets/common/img/logo.png"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cat__apps__messaging__list" *ngFor="let system of systems">
+                    <div class="cat__apps__messaging__tab" (click)="getPermission(system.id)   ">
+                        <span style="margin-left: 15px;">{{system.name}}</span>
+                        <div class="cat__apps__messaging__tab__content" style="margin-left: 15px;"></div>
+                    </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="card-body" *ngIf="showPermission">
+        <div class="row">
+            <div class="col-lg-8" style="margin-top: 2%;">
+
+                <button class="btn btn-outline-success mr-2 mb-2" type="button" (click)="collapseAll()">全部合并</button>
+
+                <button class="btn btn-outline-success mr-2 mb-2" type="button" (click)="expandAll()">全部展开</button>
+
+                <button class="btn btn-outline-success mr-2 mb-2" type="button" (click)="deleteModual()">删除模块</button>
+
+                <button class="btn btn-outline-success mr-2 mb-2" type="button" (click)="showModual()">添加一级模块</button>
+
+                <button class="btn btn-outline-success mr-2 mb-2" type="button" (click)="showNextModual(nextFlag)">添加下级模块</button>
+
+            </div>
+
+        </div>
+
+
+        <jqxTree #myTree width="300" height="500" (onSelect)="myTreeOnSelect($event)"  [source]="records"
+                 style="float: left;margin-top: 28px ;border-color: #e4e9f0;">
+        </jqxTree>
+
+
+        <div style="margin-left: 60px;  float: left;" *ngIf="showAdd">
+            <form novalidate (ngSubmit)="saveModual()" [formGroup]="saveForm">
+                <div class="modal-header">
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <input type="hidden" name="id" id="modualId" formControlName="id">
+                        <div class="col-lg-6" *ngIf="perantIdFlag">
+                            <div class="form-group">
+                                <label class="form-label" for="pId">上级模块</label>
+                                <input id="pId" class="form-control" type="text" formControlName="parent" readonly>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label" for="permissionValueModal">权限值</label>
+                                <input id="permissionValueModal" class="form-control" type="text"
+                                       formControlName="permissionValue">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label" for="nameModal">模块名称</label>
+                                <input id="nameModal" class="form-control" type="text" formControlName="name">
+                                <div class="error"
+                                     *ngIf="saveForm.get('name').invalid && saveForm.get('name').touched">
+                                    字段名称不能为空，且长度在2-36字符之间
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label" for="uriModal">路径</label>
+                                <input id="uriModal" class="form-control" type="text" formControlName="uri">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-outline-success mr-2 mb-2" [disabled]="saveForm.invalid">保存
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<!-- END: components/carousel -->

@@ -1,0 +1,27 @@
+<nz-list
+        class="demo-loadmore-list"
+        [nzDataSource]="data"
+        [nzItemLayout]="'horizontal'"
+        [nzLoading]="loading"
+        [nzRenderItem]="item"
+        nzLoadMore="true">
+    <ng-template #item let-item>
+        <nz-list-item [nzContent]="'content'" [nzActions]="[editAction,moreAction]">
+            <ng-template #editAction>
+                <a *ngIf="tabIndex === 0" (click)="edit0(item)">edit0</a>
+                <a *ngIf="tabIndex === 1" (click)="edit1(item)">edit1</a>
+                <a *ngIf="tabIndex === 2" (click)="edit2(item)">edit2</a>
+                <a *ngIf="tabIndex === 3" (click)="edit3(item)">edit3</a>
+                <a *ngIf="tabIndex === 4" (click)="edit4(item)">edit4</a>
+                <a *ngIf="tabIndex === 5" (click)="edit5(item)">edit5</a>
+                <a *ngIf="tabIndex === 6" (click)="edit6(item)">edit6</a>
+            </ng-template>
+            <nz-list-item-meta
+                    [nzTitle]="nzTitle">
+                <ng-template #nzTitle>
+                    <a href="#" class="ellipsis" [style.width]="nameWidth+'px'">{{item.rfName}}</a>
+                </ng-template>
+            </nz-list-item-meta>
+        </nz-list-item>
+    </ng-template>
+</nz-list>

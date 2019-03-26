@@ -1,0 +1,505 @@
+<nav class="cat__menu-left">
+    <div class="cat__menu-left__lock cat__menu-left__action--menu-toggle" (click)="toggle()">
+        <div class="cat__menu-left__pin-button">
+            <div><!-- --></div>
+        </div>
+    </div>
+    <div class="cat__menu-left__logo">
+        <a [routerLink]="['/dashboard']">
+            <img src="assets/modules/dummy-assets/common/img/logo-inverse.png" />
+        </a>
+    </div>
+    <div class="cat__menu-left__inner">
+        <ul *ngIf="menushow == true" class="cat__menu-left__list cat__menu-left__list--root">
+            <li  class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item--active']">
+                <a [routerLink]="[basepath]">
+                    <!--<a [routerLink]="[application.basepath]">-->
+                    <span class="cat__menu-left__icon icmn-home"></span>
+                    工作台
+                </a>
+            </li>
+            <li class="cat__menu-left__divider"><!-- --></li>
+            <!--异步加载菜单-->
+            <li *ngFor="let menu of permissions" class="cat__menu-left__item cat__menu-left__submenu" [routerLinkActive]="['cat__menu-left__item--active']" >
+                <a href="javascript: void(0);">
+                    <span class="cat__menu-left__icon {{menu.icon}}"></span>
+                    {{menu.name}}
+                </a>
+                <ul class="cat__menu-left__list">
+                    <li *ngFor="let child of menu.children" class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item--active']">
+                        <a [routerLink]="child.uri" >
+                            <span class="cat__menu-left__icon {{child.icon}}"></span>
+                            {{child.name}}
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <ul *ngIf="menushow == false" class="cat__menu-left__list cat__menu-left__list--root">
+            <!--异步加载菜单-->
+            <li *ngFor="let menu of permissions" class="cat__menu-left__item cat__menu-left__submenu" [routerLinkActive]="['cat__menu-left__item--active']" >
+                <a href="javascript: void(0);">
+                    <span class="cat__menu-left__icon {{menu.icon}}"></span>
+                    {{menu.name}}
+                </a>
+                <ul class="cat__menu-left__list">
+                    <li *ngFor="let child of menu.children" class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item--active']">
+                        <a [routerLink]="child.uri" >
+                            <span class="cat__menu-left__icon {{child.icon}}"></span>
+                            {{child.name}}
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="cat__menu-left__item cat__menu-left__submenu" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                <a href="javascript: void(0);">
+                    <span class="cat__menu-left__icon icmn-loop"></span>
+                    Pages
+                </a>
+                <ul class="cat__menu-left__list">
+                    <li class="cat__menu-left__item cat__menu-left__submenu" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                        <a href="javascript: void(0);">
+                            <span class="cat__menu-left__icon icmn-file-text"></span>
+                            Default Pages
+                        </a>
+                        <ul class="cat__menu-left__list">
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/pages/pricing-tables']">
+                                    <span class="cat__menu-left__icon">PT</span>
+                                    Pricing Tables
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/pages/invoice']">
+                                    <span class="cat__menu-left__icon">I</span>
+                                    Invoice
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/pages/weboffice']">
+                                    <span class="cat__menu-left__icon">I</span>
+                                    weboffice
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="cat__menu-left__item cat__menu-left__submenu" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                        <a href="javascript: void(0);">
+                            <span class="cat__menu-left__icon icmn-download"></span>
+                            Ecommerce
+                        </a>
+                        <ul class="cat__menu-left__list">
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/ecommerce/dashboard']">
+                                    <span class="cat__menu-left__icon">DB</span>
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/ecommerce/products-catalog']">
+                                    <span class="cat__menu-left__icon">PC</span>
+                                    Products Catalog
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/ecommerce/product-details']">
+                                    <span class="cat__menu-left__icon">PD</span>
+                                    Product Details
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/ecommerce/product-edit']">
+                                    <span class="cat__menu-left__icon">PE</span>
+                                    Product Edit
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/ecommerce/products-list']">
+                                    <span class="cat__menu-left__icon">PL</span>
+                                    Products List
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/ecommerce/orders']">
+                                    <span class="cat__menu-left__icon">O</span>
+                                    Orders
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/ecommerce/cart-checkout']">
+                                    <span class="cat__menu-left__icon">CC</span>
+                                    Cart / Checkout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                        <a [routerLink]="['/cleanui/apps/profile']">
+                            <span class="cat__menu-left__icon icmn-profile"></span>
+                            Profile
+                        </a>
+                    </li>
+                    <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                        <a [routerLink]="['/cleanui/apps/messaging']">
+                            <span class="cat__menu-left__icon icmn-bubbles4"></span>
+                            <span class="badge badge-danger pull-right">768</span>
+                            Messaging
+                        </a>
+                    </li>
+                    <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                        <a [routerLink]="['/cleanui/apps/mail']">
+                            <span class="cat__menu-left__icon icmn-envelop"></span>
+                            <span class="badge badge-success pull-right">84</span>
+                            Mail
+                        </a>
+                    </li>
+                    <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                        <a [routerLink]="['/cleanui/apps/calendar']">
+                            <span class="cat__menu-left__icon icmn-calendar"></span>
+                            Calendar
+                        </a>
+                    </li>
+                    <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                        <a [routerLink]="['/cleanui/apps/gallery']">
+                            <span class="cat__menu-left__icon icmn-images"></span>
+                            Gallery
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="cat__menu-left__item cat__menu-left__submenu" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                <a href="javascript: void(0);">
+                    <span class="cat__menu-left__icon icmn-loop"></span>
+                    Components
+                </a>
+                <ul class="cat__menu-left__list">
+                    <li class="cat__menu-left__item cat__menu-left__submenu" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                        <a href="javascript: void(0);">
+                            <span class="cat__menu-left__icon icmn-list"></span>
+                            Forms
+                        </a>
+                        <ul class="cat__menu-left__list">
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/forms/basic-form-elements']">
+                                    <span class="cat__menu-left__icon">BF</span>
+                                    Basic Form Elements
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/forms/buttons']">
+                                    <span class="cat__menu-left__icon">B</span>
+                                    Buttons
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/forms/dropdowns']">
+                                    <span class="cat__menu-left__icon">D</span>
+                                    Dropdowns
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/forms/selectboxes']">
+                                    <span class="cat__menu-left__icon">SB</span>
+                                    Selectboxes
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/forms/checkboxes-radio']">
+                                    <span class="cat__menu-left__icon">CR</span>
+                                    Checkboxes / Radio
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/forms/form-wizard']">
+                                    <span class="cat__menu-left__icon">FW</span>
+                                    Form Wizard
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/forms/form-validation']">
+                                    <span class="cat__menu-left__icon">FV</span>
+                                    Form Validation
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/forms/autocomplete']">
+                                    <span class="cat__menu-left__icon">AC</span>
+                                    Autocomplete
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/forms/input-mask']">
+                                    <span class="cat__menu-left__icon">IM</span>
+                                    Input Mask
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/forms/file-uploads']">
+                                    <span class="cat__menu-left__icon">FU</span>
+                                    File Uploads
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/forms/extras']">
+                                    <span class="cat__menu-left__icon">E</span>
+                                    Extras
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="cat__menu-left__item cat__menu-left__submenu" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                        <a href="javascript: void(0);">
+                            <span class="cat__menu-left__icon icmn-loop"></span>
+                            Components
+                        </a>
+                        <ul class="cat__menu-left__list">
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/components/date-picker']">
+                                    <span class="cat__menu-left__icon">DP</span>
+                                    Date Picker
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/components/calendar']">
+                                    <span class="cat__menu-left__icon">CL</span>
+                                    Calendar
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/components/carousel']">
+                                    <span class="cat__menu-left__icon">CR</span>
+                                    Carousel
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/components/media-players']">
+                                    <span class="cat__menu-left__icon">MP</span>
+                                    Media Players
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/components/slider']">
+                                    <span class="cat__menu-left__icon">SL</span>
+                                    Slider
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/components/modal']">
+                                    <span class="cat__menu-left__icon">M</span>
+                                    Modal
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/components/tooltips-popovers']">
+                                    <span class="cat__menu-left__icon">TP</span>
+                                    Tooltips & Popovers
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/components/notifications-alerts']">
+                                    <span class="cat__menu-left__icon">NA</span>
+                                    Notifications & Alerts
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/components/loading-progress']">
+                                    <span class="cat__menu-left__icon">LP</span>
+                                    Loading Progress
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/components/progress-bars']">
+                                    <span class="cat__menu-left__icon">PB</span>
+                                    Progress Bars
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/components/badges-labels']">
+                                    <span class="cat__menu-left__icon">BL</span>
+                                    Badges & Labels
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/components/steps']">
+                                    <span class="cat__menu-left__icon">S</span>
+                                    Steps
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/components/breadcrumbs']">
+                                    <span class="cat__menu-left__icon">B</span>
+                                    Breadcrumbs
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/components/pagination']">
+                                    <span class="cat__menu-left__icon">P</span>
+                                    Pagination
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/components/collapse']">
+                                    <span class="cat__menu-left__icon">C</span>
+                                    Collapse
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/components/tabs']">
+                                    <span class="cat__menu-left__icon">T</span>
+                                    Tabs
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/components/text-editor']">
+                                    <span class="cat__menu-left__icon">TE</span>
+                                    Text Editor
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/components/nestable']">
+                                    <span class="cat__menu-left__icon">N</span>
+                                    Nestable
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="cat__menu-left__item cat__menu-left__submenu" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                        <a href="javascript: void(0);">
+                            <span class="cat__menu-left__icon icmn-table"></span>
+                            Tables
+                        </a>
+                        <ul class="cat__menu-left__list">
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/tables/ant-tables']">
+                                    <span class="cat__menu-left__icon">BT</span>
+                                    Ant Tables
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/tables/basic-tables']">
+                                    <span class="cat__menu-left__icon">BT</span>
+                                    Basic Tables
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/tables/datatables']">
+                                    <span class="cat__menu-left__icon">DT</span>
+                                    DataTables
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/tables/editable-tables']">
+                                    <span class="cat__menu-left__icon">ET</span>
+                                    Editable Tables
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="cat__menu-left__item cat__menu-left__submenu" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                        <a href="javascript: void(0);">
+                            <span class="cat__menu-left__icon icmn-stats-bars"></span>
+                            Charts
+                        </a>
+                        <ul class="cat__menu-left__list">
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/charts/chartistjs']">
+                                    <span class="cat__menu-left__icon">CT</span>
+                                    Chartist.js
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/charts/chartjs']">
+                                    <span class="cat__menu-left__icon">CR</span>
+                                    Chart.js
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/charts/c3']">
+                                    <span class="cat__menu-left__icon">C3</span>
+                                    C3
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/charts/peity']">
+                                    <span class="cat__menu-left__icon">PT</span>
+                                    Peity
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                        <a [routerLink]="['/cleanui/components/mail-templates']">
+                            <span class="cat__menu-left__icon icmn-envelop"></span>
+                            Mail Templates
+                        </a>
+                    </li>
+                    <li class="cat__menu-left__item cat__menu-left__submenu" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                        <a href="javascript: void(0);">
+                            <span class="cat__menu-left__icon icmn-star-full"></span>
+                            Icons
+                        </a>
+                        <ul class="cat__menu-left__list">
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/icons/fontawesome']">
+                                    <span class="cat__menu-left__icon">FA</span>
+                                    FontAwesome
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/icons/linear-icons-free']">
+                                    <span class="cat__menu-left__icon">LI</span>
+                                    Linearicons Free
+                                </a>
+                            </li>
+                            <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                                <a [routerLink]="['/cleanui/icons/icomoon-free']">
+                                    <span class="cat__menu-left__icon">IC</span>
+                                    Icomoon Free
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li class="cat__menu-left__item cat__menu-left__submenu" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                <a href="javascript: void(0);">
+                    <span class="cat__menu-left__icon icmn-checkbox-unchecked"></span>
+                    Layout
+                </a>
+                <ul class="cat__menu-left__list">
+                    <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                        <a [routerLink]="['/cleanui/layout/grid']">
+                            <span class="cat__menu-left__icon">G</span>
+                            Grid
+                        </a>
+                    </li>
+                    <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                        <a [routerLink]="['/cleanui/layout/cards']">
+                            <span class="cat__menu-left__icon">PC</span>
+                            Cards / Panels
+                        </a>
+                    </li>
+                    <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                        <a [routerLink]="['/cleanui/layout/sidebars']">
+                            <span class="cat__menu-left__icon">SB</span>
+                            Sidebars
+                        </a>
+                    </li>
+                    <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                        <a [routerLink]="['/cleanui/layout/utilities']">
+                            <span class="cat__menu-left__icon">U</span>
+                            Utilities
+                        </a>
+                    </li>
+                    <li class="cat__menu-left__item" [routerLinkActive]="['cat__menu-left__item&#45;&#45;active']">
+                        <a [routerLink]="['/cleanui/layout/typography']">
+                            <span class="cat__menu-left__icon icmn-font-size"></span>
+                            Typography
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>

@@ -1,0 +1,109 @@
+<section class="card">
+    <form novalidate  [formGroup]="saveForm">
+        <div class="modal-header">
+            <h5 class="modal-title" id="myModalLabel">整章建制</h5>
+        </div>
+        <input type="hidden" name="riskFiItId" id="riskFiItId" formControlName="riskFiItId">
+        <input type="hidden" name="riskFileTaskId" id="riskFileTaskId" formControlName="riskFileTaskId">
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label class="form-label">标题</label>
+                        <input id="rftNameModal" class="form-control" type="text"
+                               formControlName="rftName" name="rftName">
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label class="form-label">流程</label>
+                        <input id="rftReceiverModal" class="form-control" type="text"
+                               formControlName="rftReceiver" name="rftReceiver">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label class="form-label" for="rftEmergencyLev">紧急程度</label>
+                        <select name="rftEmergencyLev" class="form-control select2" formControlName="rftEmergencyLev">
+                            <option value="0">一般</option>
+                            <option value="1">加急</option>
+                        </select>
+                        <div class="error"
+                             *ngIf="saveForm.get('rftEmergencyLev').invalid && saveForm.get('rftEmergencyLev').touched">
+                            请选择紧急程度
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="startEndTime">起止时间</label>
+                        <input id="startEndTime" name="startEndTime" class="form-control" type="text"
+                               formControlName="startEndTime"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="menu col-lg-12">
+                    <ul>
+                        <li  *ngFor="let file of fileDtoList;let idx=index;" >
+                            <a (click)="downloadFile(idx)">{{file.name}}</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <button class="btn btn-outline-danger mr-2 mb-2" type="button"
+                            (click)="showUploadModal()">
+                        上传文件
+                    </button>
+                </div>
+            </div>
+        </div>
+
+         <div class="modal-footer">
+             <button type="button" class="btn btn-primary width-150" [disabled]="saveForm.invalid || flag" (click)="saveRiskFileTask()">
+                 保存
+             </button>
+
+
+             <button type="button" class="btn btn-primary width-150" [disabled]="saveForm.invalid || flag">
+                 发起流程
+             </button>
+         </div>
+    </form>
+
+    <ng-template #uploaderContent let-c="close">
+        <form novalidate (ngSubmit)="save()" [formGroup]="saveForm">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">文件上传</h5>
+                <button type="button" class="close" aria-label="Close" (click)="c('Close click')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <app-uploader (successFile)="showFileInfo($event)"></app-uploader>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" data-dismiss="modal" (click)="c('Close click')">关闭</button>
+            </div>
+        </form>
+    </ng-template>
+
+
+
+    <ng-template #activitiContent let-c="close">
+        <app-modeler></app-modeler>
+    </ng-template>
+
+</section>

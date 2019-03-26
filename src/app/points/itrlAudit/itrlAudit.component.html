@@ -1,0 +1,238 @@
+<!-- START: tables/datatables -->
+<section class="card">
+    <div class="card-header">
+        <form novalidate (ngSubmit)="search()" [formGroup]="searchForm">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>客户编号</label>
+                        <input class="form-control" name="memNo" type="text" formControlName="memNo">
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>客户姓名</label>
+                        <input class="form-control" name="memName" type="text" formControlName="memName">
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>审核状态</label>
+                        <select class="form-control" name="approveStatus" id="approveStatus" formControlName="approveStatus">
+                            <option value="">全部</option>
+                            <option value="0">待审核</option>
+                            <option value="1">审核通过</option>
+                            <option value="2">审核拒绝</option>
+                            <option value="3">失效</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>审核人</label>
+                        <input class="form-control" name="approveName" type="text" formControlName="approveName">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label class="col-md-3">申请时间</label>
+                        <input id="startEndApplyTime" name="startEndApplyTime" class="form-control col-md-9" type="text"
+                               formControlName="startEndApplyTime"/>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label class="col-md-3">审核时间</label>
+                        <input id="startEndApproveTime" name="startEndApproveTime" class="form-control col-md-9" type="text"
+                               formControlName="startEndApproveTime"/>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <button class="btn btn-outline-success mr-2 mb-2" type="submit" style="margin-top: 4%;">查询</button>
+                    <button class="btn btn-outline-warning mr-2 mb-2" type="button" style="margin-top: 4%;"
+                            (click)="getDdit(itrlAuditId)">编辑
+                    </button>
+                    <button class="btn btn-outline-danger mr-2 mb-2" type="button" style="margin-top: 4%;" >
+                        导出Excel
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="mb-5">
+                    <table datatable [dtOptions]="dtOptions" class="table table-hover nowrap" width="100%"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-template #content let-c="close">
+        <form novalidate (ngSubmit)="saveDdit()" [formGroup]="saveForm">
+            <input type="hidden" name="id" id="id" formControlName="id">
+            <div class="modal-header">
+                <h3 class="modal-title" id="myModalLabel">审核详情</h3>
+                <div class="form-group" style="margin-left:70%;">
+                    <label>客户姓名:{{getSearchTransferDTO.itrlMem.memName}}</label><br/>
+                    <label>客户编号:{{getSearchTransferDTO.itrlMem.memNo}}</label>
+                </div>
+                <button type="button" class="close" aria-label="Close" (click)="c('Close click')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">调整编号:</label>
+                            <input class="form-control" type="text" formControlName="transferNo" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">调整类型:</label>
+                            <select name="transferType" class="form-control select2" formControlName="transferType" disabled>
+                                <option value="0">综合调整</option>
+                                <option value="1">加分</option>
+                                <option value="2">减分</option>
+                                <option value="3">积分状态调整</option>
+                                <option value="4">账户状态调整</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">申请时间:</label>
+                            <input class="form-control" type="text" formControlName="applyTime" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <h5 class="text-black"><strong>调整前</strong></h5>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <h5 class="text-black"><strong>调整后</strong></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" *ngFor="let i of getSearchTransferDTO.transferAfterDTOS">
+                    <input type="hidden" [(ngModel)]="i.id" [ngModelOptions]="{standalone: true}">
+                    <div class="col-md-3">
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label">{{i.itrlType.typeName}}:</label>
+                            <div class="col-md-9">
+                                <input class="form-control" type="text" [(ngModel)]="i.oldScore" [ngModelOptions]="{standalone: true}"
+                                       readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <select class="form-control select2"
+                                    [(ngModel)]="i.oldScoreStaus" [ngModelOptions]="{standalone: true}"
+                                    disabled>
+                                <option value="0">禁用</option>
+                                <option value="1">启用</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <input class="form-control" [(ngModel)]="i.newScore"
+                                   [ngModelOptions]="{standalone: true}" readonly
+                                   type="text">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <select class="form-control select2"
+                                    [(ngModel)]="i.newScoreStaus" [ngModelOptions]="{standalone: true}" disabled>
+                                <option value="0">禁用</option>
+                                <option value="1">启用</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label">积分主账号状态:</label>
+                            <div class="col-md-9">
+                                <select name="memStatus" class="form-control select2"
+                                        formControlName="oldItrlMemStatus" disabled>
+                                    <option value="0">停用</option>
+                                    <option value="1">正常</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <select name="later_memStatus" class="form-control select2"
+                                    formControlName="newItrlMemStatus" disabled>
+                                <option value="0">停用</option>
+                                <option value="1">正常</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label">调整说明:</label>
+                    <div class="col-md-9">
+                            <textarea class="form-control" rows="4" formControlName="transferReason"
+                                      style="margin-top: 0px; margin-bottom: 0px; height: 87px;" readonly></textarea>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label">审核结果:</label>
+                    <div class="col-md-9">
+                        <select name="memStatus" class="form-control select2"
+                                formControlName="approveStatus">
+                            <option value="1">审核通过</option>
+                            <option value="2">审核拒绝</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label">审核说明:</label>
+                    <div class="col-md-9">
+                            <textarea class="form-control" rows="4" formControlName="approveExplain"
+                                      style="margin-top: 0px; margin-bottom: 0px; height: 87px;"></textarea>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <!--<label class="form-label">调整编号:</label>-->
+                            <!--<input class="form-control" type="text" formControlName="limitNo" readonly>-->
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">审核人:</label>
+                            <input class="form-control" type="text" formControlName="approveName" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">审核日期:</label>
+                            <input class="form-control" type="text" formControlName="approveTime" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary width-150" [disabled]="saveForm.invalid || flag">确认</button>
+                <button type="button" class="btn" data-dismiss="modal" (click)="c('Close click')">关闭</button>
+            </div>
+        </form>
+    </ng-template>
+</section>
+<!-- END: tables/datatables -->

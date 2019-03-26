@@ -1,0 +1,193 @@
+<!-- START: tables/datatables -->
+<section class="card">
+    <div class="card-header">
+        <form novalidate (ngSubmit)="search()" [formGroup]="searchForm">
+            <div class="row">
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>规则序号</label>
+                        <input class="form-control" id="lpNo" name="lpNo" type="text" formControlName="limitNo">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label for="limitStatus">规则状态</label>
+                        <select class="form-control" name="limitStatus" id="limitStatus" formControlName="limitStatus">
+                            <option value="">全部</option>
+                            <option value="0">禁用</option>
+                            <option value="1">启用</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>规则名称</label>
+                        <input class="form-control" id="lpName" name="lpName" type="text" formControlName="limitName">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label for="itrlTypeId">积分类别</label>
+                        <select class="form-control" name="itrlTypeId" id="itrlTypeId" formControlName="itrlTypeId">
+                            <option value="">全部</option>
+                            <option *ngFor="let j of itrlTy" [value]="j.id">{{j.typeName}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-lg-2">
+                    <button class="btn btn-outline-success mr-2 mb-2" type="submit" style="margin-top: 12%;">查询</button>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>规则数:</label>
+                        {{sumLimit}}
+                    </div>
+                    <div class="form-group">
+                        <label>启用规则数:</label>
+                        {{startLimit}}
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <button class="btn btn-outline-primary mr-2 mb-2" type="button"
+                        (click)="showAddModal(true)">新增
+                </button>
+                <button class="btn btn-outline-warning mr-2 mb-2" type="button"
+                        (click)="getDdit(limitParamId)">编辑
+                </button>
+            </div>
+
+        </form>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="mb-5">
+                    <table datatable [dtOptions]="dtOptions" class="table table-hover nowrap" width="100%"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-template #content let-c="close">
+        <form novalidate (ngSubmit)="saveDdit()" [formGroup]="saveForm">
+            <input type="hidden" name="id" id="id" formControlName="id">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">{{titleName}}规则</h5>
+                <button type="button" class="close" aria-label="Close" (click)="c('Close click')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">规则序号:</label>
+                            <input class="form-control" type="text" id="limitNo"
+                                   formControlName="limitNo" (change)="checkCode()">
+                            <div class="error"
+                                 *ngIf="saveForm.get('limitNo').invalid && saveForm.get('limitNo').touched">
+                                规则序号不能为空，且长度必须为6字符
+                            </div>
+                            <div class="error"
+                                 *ngIf="flag">
+                                规则序号已重复
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">规则名称:</label>
+                            <input class="form-control" type="text" formControlName="limitName">
+                            <div class="error"
+                                 *ngIf="saveForm.get('limitName').invalid && saveForm.get('limitName').touched">
+                                规则名称不能为空，且长度在1-18字符之间
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">规则状态:</label>
+                            <select class="form-control select2" formControlName="limitStatus">
+                                <option value="0">禁用</option>
+                                <option value="1">启用</option>
+                            </select>
+                            <div class="error"
+                                 *ngIf="saveForm.get('limitStatus').invalid && saveForm.get('limitStatus').touched">
+                                请选择规则状态
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">规则级别(数字越大级别越高):</label>
+                            <select class="form-control select2" formControlName="limitLev">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                            <div class="error"
+                                 *ngIf="saveForm.get('limitLev').invalid && saveForm.get('limitLev').touched">
+                                请选择规则级别
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-label">规则值:</label>
+                        <input class="form-control" type="text" formControlName="limitScore"
+                               onkeyup="value=value.replace(/[^\d]/g,'')" ng-pattern="/[^a-zA-Z]/">
+                        <div class="error"
+                             *ngIf="saveForm.get('limitScore').invalid && saveForm.get('limitScore').touched">
+                            规则值不能为空
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-label">运算符号:</label>
+                        <select class="form-control select2" formControlName="limitSymbol">
+                            <option *ngFor="let j of dditItemDto" [value]="j.id">
+                                {{j.dditItemName}}({{j.dditItemCode}})
+                            </option>
+                        </select>
+                        <div class="error"
+                             *ngIf="saveForm.get('limitSymbol').invalid && saveForm.get('limitSymbol').touched">
+                            运算符号不能为空
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-label">所属积分类别:</label>
+                        <select class="select2" id="select2" multiple></select>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-label">规则说明:</label>
+                        <textarea class="form-control" rows="3" formControlName="limitRemark"
+                                  style="margin-top: 0px; margin-bottom: 0px; height: 87px;"></textarea>
+                        <div class="error"
+                             *ngIf="saveForm.get('limitRemark').invalid && saveForm.get('limitRemark').touched">
+                            规则说明不能为空，且长度在1-50字符之间
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary width-150" [disabled]="saveForm.invalid || flag">确认
+                </button>
+                <button type="button" class="btn" data-dismiss="modal" (click)="c('Close click')">关闭</button>
+            </div>
+        </form>
+    </ng-template>
+</section>
+<!-- END: tables/datatables -->

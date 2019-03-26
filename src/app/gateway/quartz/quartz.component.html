@@ -1,0 +1,181 @@
+<section class="card">
+  <div class="card-header divCenter">
+    <form novalidate (ngSubmit)="search()" [formGroup]="searchForm">
+      <div class="row">
+        <div class="col-lg-2">
+          <div class="form-group">
+            <label>任务名称</label>
+            <input class="form-control" id="jobName" name="jobName" type="text"
+                   formControlName="jobName">
+          </div>
+        </div>
+        <div class="col-lg-2">
+          <div class="form-group">
+            <label>所属小组</label>
+            <input class="form-control" id="jobGroup" name="jobGroup" type="text"
+                   formControlName="jobGroup">
+          </div>
+        </div>
+        <div class="col-lg-2">
+          <div class="form-group">
+            <label>任务指向类</label>
+            <input class="form-control" id="jobClass" name="jobClass" type="text"
+                   formControlName="jobClass">
+          </div>
+        </div>
+        <div class="col-lg-2">
+          <div class="form-group">
+            <label>任务状态</label>
+            <select class="form-control" name="jobStatus" id="jobStatus"
+                    formControlName="jobStatus">
+              <option value="">全部</option>
+              <option value="0">正在运行</option>
+              <option value="1">停止运行</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-lg-2">
+          <button class="btn btn-outline-success mr-2 mb-2" type="submit" style="margin-top:12%;">查询</button>
+        </div>
+        <div class="col-lg-6">
+          <button class="btn btn-outline-primary mr-2 mb-2" type="button"
+                  (click)="showAddModal(true)">新增任务
+          </button>
+          <button class="btn btn-outline-warning mr-2 mb-2" type="button"
+                  (click)="getTask(quartzId)">编辑任务
+          </button>
+          <button class="btn btn-outline-danger mr-2 mb-2" type="button"
+                  (click)="stopTask(quartzId)">暂停任务
+          </button>
+          <button class="btn btn-outline-danger mr-2 mb-2" type="button"
+                  (click)="startTask(quartzId)">启动任务
+          </button>
+         <!-- <button class="btn btn-outline-danger mr-2 mb-2" type="button"
+                  (click)="delTask(quartzId)">删除任务
+          </button>-->
+          <button class="btn btn-outline-danger mr-2 mb-2" type="button"
+                  (click)="runOneTask(quartzId)">立即运行一次
+          </button>
+
+        </div>
+
+
+      </div>
+    </form>
+  </div>
+
+
+  <div class="card-body">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="mb-5">
+          <table datatable [dtOptions]="dtOptions" class="table table-hover nowrap" width="100%"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- 新增编辑变动规则-->
+  <ng-template #content let-c="close">
+    <form novalidate (ngSubmit)="saveQuartz(saveUpdate)" [formGroup]="saveForm">
+      <div class="modal-header">
+        <h5 class="modal-title" id="myModalLabel">{{titleName}}任务</h5>
+        <button type="button" class="close" aria-label="Close" (click)="c('Close click')"
+                style="margin-right: 2%;">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <input type="hidden" name="id" id="id" formControlName="id">
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label class="form-label">任务名称</label>
+              <input id="jobNameModal" class="form-control" type="text"
+                     formControlName="jobName" name="jobName" (change)="checkJobName()" [readonly]="readOnlyFlag" >
+              <div class="error"
+                   *ngIf="saveForm.get('jobName').invalid && saveForm.get('jobName').touched">
+                任务名称不能为空，且长度必须在2-100之间
+              </div>
+              <div class="error"
+                   *ngIf="nameFlag">
+                任务名称已重复
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label class="form-label">任务所属小组</label>
+              <input id="jobGroupModal" class="form-control" type="text"
+                     formControlName="jobGroup" name="jobGroup" [readonly]="readOnlyFlag">
+              <div class="error"
+                   *ngIf="saveForm.get('jobGroup').invalid && saveForm.get('jobGroup').touched">
+                任务所属小组不能为空，且长度必须在2-100之间
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label class="form-label">任务指向类</label>
+              <input id="jobClassModal" class="form-control" type="text"
+                     formControlName="jobClass" name="jobClass" (change)="checkJobCalss()" [readonly]="readOnlyFlag">
+              <div class="error"
+                   *ngIf="saveForm.get('jobClass').invalid && saveForm.get('jobClass').touched">
+                任务指向类不能为空，且长度必须在2-100之间
+              </div>
+              <div class="error"
+                   *ngIf="classFlag">
+                任务指向类已重复
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label class="form-label">任务时间表达式</label>
+              <input id="jobCronModal" class="form-control" type="text"
+                     formControlName="jobCron" name="jobCron">
+              <div class="error"
+                   *ngIf="saveForm.get('jobCron').invalid && saveForm.get('jobCron').touched">
+                任务所属小组不能为空，且长度必须在2-100之间
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label class="form-label" for="jobStatus">任务状态</label>
+              <select name="jobStatus" class="form-control select2" formControlName="jobStatus">
+                <option value="0">运行</option>
+                <option value="1">暂停</option>
+              </select>
+              <div class="error"
+                   *ngIf="saveForm.get('jobStatus').invalid && saveForm.get('jobStatus').touched">
+                请选择字段状态
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="form-group">
+          <label class="form-label">任务描述</label>
+          <textarea class="form-control" formControlName="jobDesc"></textarea>
+          <div class="error"
+               *ngIf="saveForm.get('jobDesc').invalid && saveForm.get('jobDesc').touched">
+            任务描述不能为空，长度在2-100之间
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary width-150" [disabled]="saveForm.invalid || flag">
+          确认
+        </button>
+        <button type="button" class="btn" data-dismiss="modal" (click)="c('Close click')">关闭
+        </button>
+      </div>
+    </form>
+
+
+  </ng-template>
+</section>

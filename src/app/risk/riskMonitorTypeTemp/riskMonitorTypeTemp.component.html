@@ -1,0 +1,44 @@
+<section class="card">
+    <nz-layout class="layout">
+        <nz-header style="background-color: #e1edf7">
+
+
+            <label>报告框架：</label>
+            <nz-select  style="width: 200px;" [(ngModel)]="selectedValue" (ngModelChange)="getTree($event)"
+                         nzAllowClear nzPlaceHolder="请选择报告框架">
+                <nz-option *ngFor="let monitorType of monitorTypes" [nzValue]="monitorType.id"
+                           [nzLabel]="monitorType.name"></nz-option>
+            </nz-select>
+        &nbsp;&nbsp;
+            <button nz-button class="btn btn-outline-primary" nzType="primary" (click)="saveAllSelectTableTemp()">保存
+            </button>
+
+
+        </nz-header>
+        <nz-layout>
+            <nz-sider [nzWidth]="300"  style="background:#fff; ">
+                <nz-tree
+                        [nzData]="trees"
+                        (nzClick)="nzEvent($event)">
+                </nz-tree>
+            </nz-sider>
+
+            <nz-layout style="padding:0 24px 24px" *ngIf="showTemp">
+                <nz-content style="background:#fff; padding: 24px; ">
+                    <nz-transfer
+                            [nzDataSource]="list"
+                            nzShowSearch
+                            [nzTitles]="['已选模板', '所有模板']"
+                            [nzOperations]="['删除', '添加']"
+                            [nzListStyle]="{'width.px': 400, 'height.px': 600}"
+                            [nzRender]="render"
+                            (nzChange)="change($event)">
+                        <ng-template #render let-item >
+                            <span nz-tooltip nzTitle="{{ item.description }}" >{{ item.title }}</span>
+                        </ng-template>
+                    </nz-transfer>
+                </nz-content>
+            </nz-layout>
+        </nz-layout>
+    </nz-layout>
+</section>

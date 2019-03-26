@@ -1,0 +1,7 @@
+<cat-menu-right></cat-menu-right>
+<cat-menu-left [application]="selapplication" [permissions]="permissions"></cat-menu-left>
+<cat-top-bar [application]="selapplication" [applications]="allApplication" (eventEmitter)="getSelApplication($event)"></cat-top-bar>
+<div class="cat__content">
+    <router-outlet></router-outlet>
+    <cat-footer></cat-footer>
+</div>

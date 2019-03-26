@@ -1,0 +1,19 @@
+.createTable{
+    width: 200px;
+    height: 150px;
+    text-align: center;
+    border: 1px solid black;
+}
+
+.createTable th{
+    border: 1px solid black;
+}
+
+.createTable tr{
+    border: 1px solid black;
+}
+
+.createTable td{
+    width: 20%;
+    border: 1px solid black;
+}

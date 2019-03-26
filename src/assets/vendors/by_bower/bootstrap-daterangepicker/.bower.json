@@ -1,0 +1,25 @@
+{
+  "name": "bootstrap-daterangepicker",
+  "main": [
+    "daterangepicker.js",
+    "daterangepicker.css"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "moment.js",
+    "moment.min.js"
+  ],
+  "dependencies": {
+    "jquery": "1.9.1 - 3",
+    "moment": ">=2.9.0"
+  },
+  "_source": "nexus+http://22.144.101.75:8081/repository/bower/bootstrap-daterangepicker",
+  "_target": "^2.0.0",
+  "_release": "v2.1.27",
+  "version": "v2.1.27",
+  "_originalSource": "bootstrap-daterangepicker"
+}

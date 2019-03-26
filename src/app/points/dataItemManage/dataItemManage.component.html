@@ -1,0 +1,134 @@
+<!-- START: tables/datatables -->
+<section class="card" xmlns="http://www.w3.org/1999/html">
+  <div class="card-header">
+    <form novalidate class="form-inline" (ngSubmit) = "search()" [formGroup]="searchForm">
+      <!--<div class="row">-->
+        <div class="col-lg-2">
+          <div class="form-group">
+            <label for="dditItemCode" class="col-md-4">字段编号</label>
+            <input class="form-control col-md-8" id="dditItemCode" name="dditItemCode" type="text" formControlName="dditItemCode" />
+          </div>
+        </div>
+        <div class="col-lg-2">
+          <div class="form-group">
+            <label for="dditItemName" class="col-md-4">名称</label>
+            <input class="form-control col-md-8" id="dditItemName" name="dditItemName" type="text" formControlName="dditItemName" />
+          </div>
+        </div>
+        <div class="col-lg-2">
+          <div class="form-group">
+            <label for="startEndTime" class="col-md-3">创建时间</label>
+            <input id="startEndTime" name="startEndTime" class="form-control col-md-9" type="text" formControlName="startEndTime" />
+          </div>
+        </div>
+        <div class="col-lg-2">
+          <div class="form-group">
+            <label for="createBy" class="col-md-4">创建人</label>
+            <input id="createBy" name="createBy" class="form-control col-md-8" type="text" formControlName="createBy" />
+          </div>
+        </div>
+        <div class="col-lg-2">
+          <div class="form-group">
+            <label for="itemStatus" class="col-md-5">状态</label>
+            <select class="form-control col-md-7" name="itemStatus" id="itemStatus" formControlName="itemStatus">
+              <option value="">全部</option>
+              <option value="0">禁用</option>
+              <option value="1">启用</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-lg-2">
+          <div class="form-group">
+            <label >数据字典名称:</label>
+            {{ddit.dditName}}
+          </div>
+          <div class="form-group">
+            <label for="dditId">数据字典编号:</label>
+            {{ddit.dditCode}}
+            <input type="hidden" name="dditId" id="dditId" formControlName="dditId" />
+          </div>
+        </div>
+      <!--</div>-->
+      <div class="row">
+        <div class="col-lg-12">
+          <button class="btn btn-outline-success mr-2 mb-2" type="submit" style="margin-top: 8%;">查询</button>
+          <button class="btn btn-outline-primary mr-2 mb-2" type="button" style="margin-top: 8%;"
+                  (click)="showAddModal(true)">新增
+          </button>
+          <button class="btn btn-outline-warning mr-2 mb-2" type="button" style="margin-top: 8%;" (click)="getDditItem(dditItemId)">编辑</button>
+          <button  class="btn btn-outline-success mr-2 mb-2"  type="button"  style="margin-top: 8%;" (click)="queryDetail()">返回</button>
+
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="mb-5">
+          <table datatable [dtOptions]="dtOptions" class="table table-hover nowrap" width="100%"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--增加字典模式框-->
+  <ng-template #content let-c="close">
+    <form novalidate (ngSubmit)="saveDdit()" [formGroup]="saveForm">
+      <input type="hidden" name="id" id="id" formControlName="id">
+      <div class="modal-header">
+        <h5 class="modal-title" id="myModalLabel">{{titleName}}字典</h5>
+        <button type="button" class="close" aria-label="Close" (click)="c('Close click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="dditItemCodeModal">字段编号</label>
+          <input id="dditItemCodeModal" class="form-control" type="text" formControlName="dditItemCode" (change)="checkCode()" >
+          <div class="error" *ngIf="saveForm.get('dditItemCode').invalid && saveForm.get('dditItemCode').touched">
+            字段编号不能为空，且长度在1-15字符之间
+          </div>
+          <div class="error"
+               *ngIf="flag">
+            字段编号已重复
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="dditItemNameModal">字段名称</label>
+          <input id="dditItemNameModal" class="form-control" type="text" formControlName="dditItemName" >
+          <div class="error" *ngIf="saveForm.get('dditItemName').invalid && saveForm.get('dditItemName').touched">
+            字段名称不能为空，且长度在1-15字符之间
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="dditStatusModal">状态</label>
+          <select id="dditStatusModal" name="itemStatus" class="form-control" formControlName="itemStatus">
+            <option value="0">禁用</option>
+            <option value="1">启用</option>
+          </select>
+          <div class="error" *ngIf="saveForm.get('itemStatus').invalid && saveForm.get('itemStatus').touched">
+            请选择字段状态
+          </div>
+        </div>
+
+        <!--<div class="form-group">
+          <label class="form-label">关联数据表:</label>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">数据名称:</label>
+                &lt;!&ndash;<select [(ngModel)]="dditID" [ngModelOptions]="{standalone: true}" class="form-control select2" >
+                  <option *ngFor="let j of ddit" [value]="j.id">{{j.dditName}}</option>
+                </select>&ndash;&gt;
+                <div>{{ddit.dditName}}</div>
+              </div>
+            </div>
+          </div>-->
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary width-150" [disabled]="saveForm.invalid || flag">保存</button>
+        <button type="button" class="btn" data-dismiss="modal" (click)="c('Close click')">关闭</button>
+      </div>
+    </form>
+  </ng-template>
+</section>
+<!-- END: tables/datatables -->
